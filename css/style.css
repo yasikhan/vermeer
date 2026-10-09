@@ -25,16 +25,18 @@
 
 /* ============ VARIABLES ============ */
 :root {
-  --damask: #2F3B33;     /* the wall: dark green silk damask, as in an old picture gallery */
-  --wall-ink: #E9E1CB;   /* text written straight on the wall */
-  --wall-ink-2: #B5AC94; /* secondary text on the wall */
-  --wall-rule: rgba(233, 225, 203, 0.22);
+  /* The wall: whitewashed plaster. With the shutters open it's lit from a window at upper left,
+     bright by the window and falling off into shade, as behind the Milkmaid. */
+  --plaster: #D4D1C8;
+  --daylight: radial-gradient(140% 110% at 0 0, #FAF9F5 0%, #E7E5DE 26%, #D1CEC5 58%, #BCB8AD 100%);
+  --wall-ink: #1F2024;   /* text written straight on the wall: bone black */
+  --wall-ink-2: #4C4943; /* secondary text on the wall */
+  --wall-rule: rgba(31, 32, 36, 0.18);
   --paper: #E7DEC8;      /* objects on the wall: the map sheet, wall labels */
   --gall: #35281E;       /* iron-gall ink */
   --umber: #6E5A45;      /* secondary text */
-  --ultramarine: #24418C;
-  --ultramarine-pale: #9DB0E6; /* focus rings on the wall */
-  --lead-tin: #DDB94A;   /* reserved for "seen" */
+  --ultramarine: #1C3F94; /* the one accent: natural lapis */
+  --lead-tin: #BF931F;   /* reserved for "seen" */
   --gall-soft: rgba(53, 40, 30, 0.18);
   --wash: rgba(53, 40, 30, 0.1);
   --hand: 'YasiHand', cursive;
@@ -47,10 +49,18 @@
 html { font-size: 17px; -webkit-font-smoothing: antialiased; }
 body {
   font-family: var(--body); color: var(--wall-ink);
-  background: var(--damask); min-height: 100vh; overflow-x: hidden;
+  background: var(--plaster); min-height: 100vh; overflow-x: hidden;
   font-variant-numeric: oldstyle-nums;
 }
-::selection { background: rgba(221, 185, 74, 0.55); }
+::selection { background: rgba(191, 147, 31, 0.4); }
+/* Daylight on the plaster, fixed to the screen like the window it comes from.
+   Closing the shutters (html[data-light="off"]) fades it out to bare, evenly lit plaster. */
+body::before {
+  content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: var(--daylight);
+  transition: opacity 0.8s ease;
+}
+[data-light="off"] body::before { opacity: 0; }
 
 /* ============ CONTENT PAGE LAYOUT ============ */
 .content-body {
@@ -64,7 +74,7 @@ body {
 }
 .content-body a {
   color: var(--ultramarine); text-decoration: underline;
-  text-decoration-color: rgba(36, 65, 140, 0.35);
+  text-decoration-color: rgba(28, 63, 148, 0.35);
   text-underline-offset: 3px;
 }
 .content-body a:hover { text-decoration-color: var(--ultramarine); }
@@ -80,7 +90,7 @@ body {
 .site-footer a {
   color: var(--wall-ink-2);
   text-decoration: underline;
-  text-decoration-color: rgba(181, 172, 148, 0.4);
+  text-decoration-color: rgba(76, 73, 67, 0.4);
   text-underline-offset: 2px;
 }
 

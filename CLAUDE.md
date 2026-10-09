@@ -63,13 +63,22 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 - `--hand` (YasiHand), in `--gall` ink (never blue), is used for controls and the "seen" sticky notes on wall labels. The
   tally ("13/37") is set in `--display`, centred under the intro. Map counts are
   set in `--body` so they sit on the city name's baseline.
-- Palette: `--damask` wall (dark green silk), `--paper` objects, `--gall` ink on paper,
-  `--umber` secondary on paper. Text written straight on the wall uses `--wall-ink` /
-  `--wall-ink-2`, with `--wall-rule` for rules. `--ultramarine` is for water-lining and focus rings
-  only, and `--ultramarine-pale` is for focus rings that sit on the wall. `--lead-tin` is reserved for "seen".
+- Palette: the wall is cool whitewashed plaster (`--plaster`, lit by `--daylight`, a strong
+  falloff from the upper left, fixed to the screen). Objects on it are warm `--paper`, so they separate
+  by temperature, not just value. `--gall` is ink on paper and `--umber` is secondary on paper. Text written straight on the wall uses
+  bone-black `--wall-ink` / `--wall-ink-2`, with `--wall-rule` for rules. `--ultramarine` is
+  the one accent: the tally, the rule's lozenge, links, water-lining and focus rings. `--lead-tin`
+  is reserved for "seen". Don't add another yellow or another beige.
 - No highlighter bars, no all-caps labels.
 - Light comes from the upper left, so every cast shadow falls down and to the right
   (`--cast`). Keep new shadows consistent with that.
+- The light source is an engraved casement window in the top-left corner (`.window`, fixed,
+  above the room): carved cornice, sill, and two paned leaves swung open in perspective. Clicking
+  it swings the leaves shut (cross-hatched panes; `.leaves-open` / `.leaves-shut` scale on their
+  hinges in turn): `html[data-light="off"]` fades out the daylight
+  (`body::before`, `.room-scrim::after`, the map's sheen) and swaps `--cast` for an even, directionless
+  shadow. The choice is saved in `localStorage` (`vermeer-light`) and restored before first paint
+  by an inline script in `<head>`. Anything new that depends on light needs an off state.
 - Animation: the rise and return use the Web Animations API with staggered delays.
   `prefers-reduced-motion` gets plain fades. Hidden tabs skip animation entirely, because rAF
   and WAAPI don't tick there.

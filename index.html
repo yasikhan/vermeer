@@ -15,16 +15,20 @@
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/im-fell-double-pica.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/YasiHand-Regular.woff2" crossorigin>
 <link rel="stylesheet" href="css/style.css">
+<script>try { if (localStorage.getItem('vermeer-light') === 'off') document.documentElement.dataset.light = 'off'; } catch (e) {}</script>
 <style>
   :root {
     --sea: #E2D9C2;
     --land: #EDE6D3;
     /* Light comes from a window at upper left, as in nearly every Vermeer interior,
        so every cast shadow in the page falls down and to the right. */
-    --cast: 8px 12px 22px rgba(8, 12, 9, 0.5), 2px 3px 5px rgba(8, 12, 9, 0.4);
+    --cast: 8px 12px 22px rgba(40, 38, 32, 0.34), 2px 3px 5px rgba(40, 38, 32, 0.3);
     --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.21 0 0 0 0 0.16 0 0 0 0 0.1 0 0 0 0.5 -0.12'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
     --foxing: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.3 0 0 0 0 0.12 0 0 0 1.4 -0.78'/%3E%3C/filter%3E%3Crect width='900' height='600' filter='url(%23f)'/%3E%3C/svg%3E");
   }
+  /* Shutters closed: no window, so no direction. Shadows fall evenly all round. */
+  [data-light="off"] { --cast: 0 3px 10px rgba(40, 38, 32, 0.2), 0 1px 2px rgba(40, 38, 32, 0.2); }
+  .wall-map, .frame { transition: box-shadow 0.8s ease; }
   .content-body.map-page { max-width: 1100px; }
 
   /* ============ TITLE PAGE ============ */
@@ -39,11 +43,11 @@
     margin: 0 auto 1.8rem; width: 11rem;
   }
   .rule::before, .rule::after { content: ''; flex: 1; height: 0; border-top: 1px solid var(--wall-ink); }
-  .rule i { width: 7px; height: 7px; background: var(--wall-ink); transform: rotate(45deg); }
+  .rule i { width: 7px; height: 7px; background: var(--ultramarine); transform: rotate(45deg); }
   .title-page .intro { font-size: 1.16rem; line-height: 1.8; text-wrap: pretty; }
   /* How many I've seen, set centred under the paragraph like the last line of a title block. */
   .title-page .tally {
-    font-family: var(--display); font-size: 1.6rem; line-height: 1; color: var(--wall-ink);
+    font-family: var(--display); font-size: 1.6rem; line-height: 1; color: var(--ultramarine);
     margin: 0.5rem 0 0; letter-spacing: 0.04em;
   }
   .title-page .tally:empty { display: none; }
@@ -84,7 +88,9 @@
   .map-viewport::after {
     content: ''; position: absolute; inset: 0; pointer-events: none; z-index: 1;
     background: linear-gradient(128deg, rgba(255,252,240,0.38) 0%, rgba(255,252,240,0) 42%, rgba(53,40,30,0.12) 100%);
+    transition: opacity 0.8s ease;
   }
+  [data-light="off"] .map-viewport::after { opacity: 0; }
   .map-svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; }
   /* --u is one screen pixel in map units (set by js/map.js), so pen strokes keep their weight at every zoom. */
   .map-svg { --u: 1; }
@@ -208,12 +214,12 @@
     transition: padding-left 0.15s;
   }
   .city-link:hover { padding-left: 0.3rem; }
-  .city-link:focus-visible { outline: 2px solid var(--ultramarine-pale); outline-offset: 2px; }
+  .city-link:focus-visible { outline: 2px solid var(--ultramarine); outline-offset: 2px; }
   .city-link .n { font-style: italic; font-size: 0.92rem; color: var(--wall-ink-2); display: flex; align-items: baseline; gap: 0.55rem; }
   /* One circle per painting: filled with lead-tin once seen, an empty ink ring until then. */
   .ticks { display: inline-flex; gap: 3px; align-items: center; transform: translateY(-1px); }
   .tick { width: 7px; height: 7px; border-radius: 50%; border: 0.75px solid var(--wall-ink-2); }
-  .tick.seen { background: #C49A2C; border-color: #9C7A1E; }
+  .tick.seen { background: var(--lead-tin); border-color: #8C6A12; }
 
   /* ============ THE ROOM (overlay) ============ */
   .room {
@@ -224,12 +230,50 @@
   .room.open { visibility: visible; }
   .room-scrim {
     position: fixed; inset: 0;
-    background:
-      linear-gradient(128deg, rgba(255,252,240,0.07) 0%, rgba(255,252,240,0) 45%, rgba(8,12,9,0.25) 100%),
-      var(--grain),
-      var(--damask);
+    background: var(--grain), var(--plaster);
+    background-size: 240px 240px, auto;
     opacity: 0;
   }
+  .room-scrim::after {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: var(--grain), var(--daylight);
+    background-size: 240px 240px, auto;
+    transition: opacity 0.8s ease;
+  }
+  [data-light="off"] .room-scrim::after { opacity: 0; }
+
+  /* ============ THE WINDOW ============ */
+  /* The light source: a leaded casement in the corner, the one every Vermeer interior is lit by.
+     Click it to swing the leaves shut. Fixed above the room, so it works there too. */
+  .window {
+    position: fixed; top: 14px; left: 14px; z-index: 110;
+    width: 64px; height: 60px; padding: 0;
+    background: none; border: none; cursor: pointer;
+  }
+  .window svg { display: block; width: 100%; height: 100%; overflow: visible; }
+  /* Engraved: ink outlines, hatched wood, paper-white light through the opening. */
+  .window .opening { fill: #FFFDF4; }
+  .window .lintel-shade { fill: url(#win-hatch); opacity: 0.7; }
+  .window .jamb, .window .cornice, .window .sill, .window .leaf {
+    stroke: var(--gall); stroke-width: 0.9; stroke-linejoin: round;
+  }
+  .window .jamb { fill: none; }
+  .window .cornice, .window .sill, .window .leaf { fill: url(#win-hatch); }
+  .window .dentils { stroke: var(--gall); stroke-width: 1.4; stroke-dasharray: 0.9 1.1; }
+  .window .crest, .window .jamb-line { fill: none; stroke: var(--gall); stroke-width: 0.9; stroke-linecap: round; }
+  .window .boss { fill: var(--gall); }
+  .window .pane { fill: #FBFAF5; stroke: var(--gall); stroke-width: 0.5; }
+  .window .pane-shut { fill: url(#win-crosshatch); stroke: var(--gall); stroke-width: 0.5; }
+  /* The leaves swing on their hinges: the open pair folds in to the jambs, then the shut pair
+     swings out across the opening (and back again in reverse). */
+  .window .leaves-open, .window .leaves-shut { transform-box: view-box; transition: transform 0.28s ease-in; }
+  .window .leaves-shut { transform: scaleX(0); transition-delay: 0s; }
+  .window .leaves-open { transition-delay: 0.28s; transition-timing-function: ease-out; }
+  [data-light="off"] .window .leaves-open { transform: scaleX(0); transition-delay: 0s; transition-timing-function: ease-in; }
+  [data-light="off"] .window .leaves-shut { transform: none; transition-delay: 0.28s; transition-timing-function: ease-out; }
+  /* On hover the open leaves give a little, to show they move. */
+  :root:not([data-light="off"]) .window:hover .leaves-open { transform: scaleX(0.9); transition-delay: 0s; }
+  .window:focus-visible { outline: 2px solid var(--ultramarine); outline-offset: 4px; }
   .room-inner {
     position: relative;
     max-width: 1240px; margin: 0 auto;
@@ -252,7 +296,7 @@
     background: var(--wash); opacity: 0; transition: opacity 0.15s;
   }
   .room-close:hover::before { opacity: 1; }
-  .room-close:focus-visible { outline: 2px solid var(--ultramarine-pale); outline-offset: 2px; }
+  .room-close:focus-visible { outline: 2px solid var(--ultramarine); outline-offset: 2px; }
   .room-head, .room-sub, .museum-name, .room-close { opacity: 0; }
 
   .museum-name {
@@ -303,13 +347,13 @@
     pointer-events: none;
   }
   .cord svg { display: block; width: 100%; height: 100%; overflow: visible; }
-  .cord line { stroke: #8a7c63; stroke-width: 1.3px; vector-effect: non-scaling-stroke; }
-  .cord .cord-shadow { stroke: rgba(8, 12, 9, 0.35); stroke-width: 1.6px; }
+  .cord line { stroke: #6F6450; stroke-width: 1.3px; vector-effect: non-scaling-stroke; }
+  .cord .cord-shadow { stroke: rgba(40, 38, 32, 0.22); stroke-width: 1.6px; }
   .cord .nail {
     position: absolute; left: 50%; top: -3px; width: 7px; height: 7px; margin-left: -3.5px;
     border-radius: 50%;
     background: radial-gradient(circle at 35% 32%, #8a7a66 0 20%, #3c3024 60%, #241b12 100%);
-    box-shadow: 2px 3px 3px rgba(8, 12, 9, 0.5);
+    box-shadow: 2px 3px 3px rgba(40, 38, 32, 0.35);
   }
 
   /* The Concert: the frame still hangs in Boston, around nothing. */
@@ -358,14 +402,19 @@
   }
   .postit span + span { font-size: 1.05rem; }
 
+  @media (prefers-reduced-motion: reduce) {
+    .window .leaves-open, .window .leaves-shut { transition: none; }
+  }
+
   @media (max-width: 768px) {
+    .window { top: 8px; left: 6px; width: 46px; height: 43px; }
     .title-page .h1-small { font-size: 1.25rem; }
     .title-page .h1-large { font-size: 2.9rem; }
     .wall-map { margin-top: 2.4rem; padding: 9px; }
     .wall-map::before { inset: 4px; }
     .map-viewport { aspect-ratio: 1.6; }
     .mark-name { font-size: 0.86rem; }
-    .room-inner { padding: 1.4rem 1.2rem 4rem; }
+    .room-inner { padding: 4.2rem 1.2rem 4rem; } /* clear of the window */
     .room-title { font-size: 1.9rem; }
     .room-close { top: 1.4rem; }
     .hang { flex-direction: column; align-items: center; gap: 4.4rem; }
@@ -381,6 +430,33 @@
 </style>
 </head>
 <body>
+<button class="window" id="windowBtn" type="button" aria-label="Daylight" aria-pressed="true" title="Close the shutters">
+  <svg viewBox="0 0 64 60" aria-hidden="true">
+    <defs>
+      <pattern id="win-hatch" width="1.7" height="1.7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <line x1="0" y1="0" x2="0" y2="1.7" stroke="#35281E" stroke-width="0.55"/>
+      </pattern>
+      <pattern id="win-crosshatch" width="1.5" height="1.5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <path d="M0 0 V1.5 M0 0 H1.5" stroke="#35281E" stroke-width="0.75" fill="none"/>
+      </pattern>
+    </defs>
+    <rect class="opening" x="20" y="12" width="24" height="38"/>
+    <rect class="lintel-shade" x="20" y="12" width="24" height="2.5"/>
+    <rect class="jamb" x="18.5" y="11" width="27" height="40"/>
+    <path class="cornice" d="M14.5 11 H49.5 L47.5 7.5 H16.5 Z"/>
+    <line class="dentils" x1="17" y1="9.6" x2="47" y2="9.6"/>
+    <path class="crest" d="M19.5 7.5 C22 3.6 42 3.6 44.5 7.5"/>
+    <path class="crest" d="M18 7.3 c-2.2 0 -2.6 -2.9 -0.6 -3.1 c1.3 -0.1 1.5 1.5 0.5 1.6 M46 7.3 c2.2 0 2.6 -2.9 0.6 -3.1 c-1.3 -0.1 -1.5 1.5 -0.5 1.6"/>
+    <circle class="boss" cx="32" cy="5.2" r="1.1"/>
+    <path class="sill" d="M17 51 H47 L50.5 54.5 H13.5 Z"/>
+    <line class="jamb-line" x1="13" y1="55.6" x2="51" y2="55.6"/>
+    <g class="leaves-open left" style="transform-origin:18.5px 31px"><path class="leaf" d="M3.5 8.5 L18.5 13 L18.5 49 L3.5 54 Z"/><path class="pane" d="M5.45 11.74 L10.47 13.06 L10.47 24.15 L5.45 23.69 Z M5.45 25.24 L10.47 25.59 L10.47 36.68 L5.45 37.19 Z M5.45 38.74 L10.47 38.12 L10.47 49.21 L5.45 50.69 Z M11.52 13.33 L16.55 14.65 L16.55 24.7 L11.52 24.25 Z M11.52 25.66 L16.55 26.01 L16.55 36.06 L11.52 36.57 Z M11.52 37.99 L16.55 37.36 L16.55 47.42 L11.52 48.9 Z"/></g>
+    <g class="leaves-open right" style="transform-origin:45.5px 31px"><path class="leaf" d="M60.5 8.5 L45.5 13 L45.5 49 L60.5 54 Z"/><path class="pane" d="M58.55 11.74 L53.52 13.06 L53.52 24.15 L58.55 23.69 Z M58.55 25.24 L53.52 25.59 L53.52 36.68 L58.55 37.19 Z M58.55 38.74 L53.52 38.12 L53.52 49.21 L58.55 50.69 Z M52.48 13.33 L47.45 14.65 L47.45 24.7 L52.48 24.25 Z M52.48 25.66 L47.45 26.01 L47.45 36.06 L52.48 36.57 Z M52.48 37.99 L47.45 37.36 L47.45 47.42 L52.48 48.9 Z"/></g>
+    <g class="leaves-shut left" style="transform-origin:20px 31px"><path class="leaf" d="M20 12 L32 12 L32 50 L20 50 Z"/><path class="pane-shut" d="M21.56 14.28 L25.58 14.28 L25.58 24.54 L21.56 24.54 Z M21.56 25.87 L25.58 25.87 L25.58 36.13 L21.56 36.13 Z M21.56 37.46 L25.58 37.46 L25.58 47.72 L21.56 47.72 Z M26.42 14.28 L30.44 14.28 L30.44 24.54 L26.42 24.54 Z M26.42 25.87 L30.44 25.87 L30.44 36.13 L26.42 36.13 Z M26.42 37.46 L30.44 37.46 L30.44 47.72 L26.42 47.72 Z"/></g>
+    <g class="leaves-shut right" style="transform-origin:44px 31px"><path class="leaf" d="M44 12 L32 12 L32 50 L44 50 Z"/><path class="pane-shut" d="M42.44 14.28 L38.42 14.28 L38.42 24.54 L42.44 24.54 Z M42.44 25.87 L38.42 25.87 L38.42 36.13 L42.44 36.13 Z M42.44 37.46 L38.42 37.46 L38.42 47.72 L42.44 47.72 Z M37.58 14.28 L33.56 14.28 L33.56 24.54 L37.58 24.54 Z M37.58 25.87 L33.56 25.87 L33.56 36.13 L37.58 36.13 Z M37.58 37.46 L33.56 37.46 L33.56 47.72 L37.58 47.72 Z"/></g>
+  </svg>
+</button>
+
 <main class="content-body map-page">
   <header class="title-page">
     <h1><span class="h1-small">A life's work:</span><span class="h1-large">Seeking Vermeer</span></h1>
@@ -455,6 +531,22 @@
 
 <footer class="site-footer">designed and coded by yasmeena khan &copy; 2026 &ndash; paintings via <a href="https://commons.wikimedia.org/wiki/Category:Paintings_by_Johannes_Vermeer">Wikimedia Commons</a>, public domain &ndash; coastlines from <a href="https://www.naturalearthdata.com/">Natural Earth</a> &ndash; <a href="https://github.com/yasikhan/vermeer">repo</a></footer>
 
+<script>
+(function () {
+  var btn = document.getElementById('windowBtn'), de = document.documentElement;
+  function sync() {
+    var lit = de.dataset.light !== 'off';
+    btn.setAttribute('aria-pressed', lit);
+    btn.title = lit ? 'Close the shutters' : 'Open the shutters';
+  }
+  btn.addEventListener('click', function () {
+    if (de.dataset.light === 'off') delete de.dataset.light; else de.dataset.light = 'off';
+    try { localStorage.setItem('vermeer-light', de.dataset.light === 'off' ? 'off' : 'on'); } catch (e) {}
+    sync();
+  });
+  sync();
+})();
+</script>
 <script src="js/map.js"></script>
 <script src="js/frames.js"></script>
 </body>
