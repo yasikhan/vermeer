@@ -1,0 +1,140 @@
+/* Shared base, copied from yrk-website/css/style.css and trimmed to what this site uses. */
+/* ============ FONTS (self-hosted, latin subset) ============ */
+@font-face {
+  font-family: 'YasiHand';
+  src: url('../assets/fonts/YasiHand-Regular.woff2') format('woff2'),
+       url('../assets/fonts/YasiHand-Regular.ttf') format('truetype');
+  font-weight: normal; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Libre Caslon Display';
+  src: url('../assets/fonts/libre-caslon-display-400.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../assets/fonts/newsreader.woff2') format('woff2');
+  font-weight: 300 400; font-style: normal; font-display: swap;
+}
+@font-face {
+  font-family: 'Newsreader';
+  src: url('../assets/fonts/newsreader-italic.woff2') format('woff2');
+  font-weight: 300 400; font-style: italic; font-display: swap;
+}
+
+/* ============ VARIABLES ============ */
+:root {
+  --page: #EFEFEF;
+  --ink: #1a1a1a;
+  --ink2: #3a3a3a;
+  --ink3: #5e5e5e;
+  --ink4: #8a8a8a;
+  --highlight: rgba(147, 197, 222, 0.45);
+  --highlight-strong: rgba(147, 197, 222, 0.7);
+  --link: #3a4f6a;
+  --link-soft: rgba(58, 79, 106, 0.3);
+  --hand: 'YasiHand', cursive;
+  --serif: 'Libre Caslon Display', Georgia, serif;
+  --body: 'Newsreader', Georgia, serif;
+}
+
+/* ============ RESET & BASE ============ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { font-size: 17px; -webkit-font-smoothing: antialiased; }
+body {
+  font-family: var(--body); color: var(--ink);
+  background: var(--page); min-height: 100vh; overflow-x: hidden;
+}
+::selection { background: var(--highlight-strong); }
+
+/* ============ CONTENT PAGE LAYOUT ============ */
+.content-nav {
+  position: sticky; top: 0; z-index: 50;
+  background: var(--page);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 0.9rem 2rem;
+  display: flex; align-items: baseline; justify-content: space-between;
+}
+.back-btn {
+  font-family: var(--hand); font-size: 1.15rem;
+  color: var(--ink3); background: none; border: none;
+  cursor: pointer; padding: 0.2rem 0.5rem; position: relative;
+  transition: color 0.15s; text-decoration: none;
+}
+.back-btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: var(--highlight); opacity: 0; z-index: -1;
+  border-radius: 2px; transition: opacity 0.15s;
+}
+.back-btn:hover::before { opacity: 1; }
+.back-btn:hover { color: var(--ink); }
+.content-title {
+  font-family: var(--body); font-size: 1.05rem;
+  font-weight: 400; color: var(--ink);
+}
+.content-body {
+  max-width: 640px; margin: 0 auto; padding: 4rem 2rem 6rem;
+}
+.content-body h1 {
+  font-family: var(--serif); font-size: 2.6rem;
+  font-weight: 400; margin-bottom: 1.5rem; line-height: 1.15;
+  position: relative; display: inline-block;
+}
+.content-body h1::after {
+  content: ''; position: absolute;
+  left: -3px; right: -3px; bottom: 3px;
+  height: 7px; background: var(--highlight); z-index: -1;
+  border-radius: 2px 1px 3px 1px;
+}
+.content-body h2 {
+  font-family: var(--serif); font-size: 1.4rem;
+  font-weight: 400; color: var(--ink);
+  margin: 2.5rem 0 1rem; position: relative; display: inline-block;
+}
+.content-body h2::after {
+  content: ''; position: absolute;
+  left: -2px; right: -2px; bottom: 2px;
+  height: 5px; background: var(--highlight); z-index: -1;
+}
+.content-body p {
+  font-size: 1.03rem; line-height: 1.78;
+  color: var(--ink2); margin-bottom: 1rem;
+}
+.content-body a {
+  color: var(--link); text-decoration: underline;
+  text-decoration-color: var(--link-soft);
+  text-underline-offset: 3px;
+}
+.content-body a:hover { text-decoration-color: var(--link); }
+
+/* ============ SITE FOOTER ============ */
+.site-footer {
+  text-align: center;
+  font-family: var(--body);
+  font-size: 0.78rem;
+  color: var(--ink3);
+  padding: 2rem 1rem;
+}
+.site-footer a {
+  color: var(--ink3);
+  text-decoration: underline;
+  text-decoration-color: rgba(0,0,0,0.15);
+  text-underline-offset: 2px;
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 768px) {
+  .content-nav { padding: 0.7rem 1rem; }
+  .back-btn { font-size: 1rem; }
+  .content-title { font-size: 0.9rem; }
+  .content-body { padding: 2rem 1.2rem 4rem; }
+  .content-body h1 { font-size: 1.7rem; }
+  .content-body p { font-size: 1rem; }
+}
+
+@media (max-width: 480px) {
+  .content-body { padding: 1.5rem 1rem 3rem; }
+  .content-body h1 { font-size: 1.4rem; }
+  .content-body h2 { font-size: 1.2rem; }
+  .content-body p { font-size: 1rem; line-height: 1.7; }
+}

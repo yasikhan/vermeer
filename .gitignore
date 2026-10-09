@@ -1,0 +1,4 @@
+.DS_Store
+# Natural Earth source for scripts/build_map.py (1.6 MB); see README to re-download.
+scripts/ne_50m_land.geojson
+__pycache__/
