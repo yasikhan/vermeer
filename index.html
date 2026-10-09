@@ -40,7 +40,7 @@
   }
   .rule::before, .rule::after { content: ''; flex: 1; height: 0; border-top: 1px solid var(--gall); }
   .rule i { width: 7px; height: 7px; background: var(--gall); transform: rotate(45deg); }
-  .title-page .intro { font-size: 1.16rem; line-height: 1.8; }
+  .title-page .intro { font-size: 1.16rem; line-height: 1.8; text-wrap: pretty; }
   /* How many I've seen, set centred under the paragraph like the last line of a title block. */
   .title-page .tally {
     font-family: var(--display); font-size: 1.6rem; line-height: 1; color: var(--gall);
@@ -385,7 +385,8 @@
   <header class="title-page">
     <h1><span class="h1-small">A life's work:</span><span class="h1-large">Seeking Vermeer</span></h1>
     <div class="rule" aria-hidden="true"><i></i></div>
-    <p class="intro">There are only 37 known Vermeers. 35 are in public collections. My life's goal is to see every one. Vermeer was the greatest painter of the Dutch Golden Age, known for his uncommon ability to capture the world both as it was and as he wished it would be.</p>
+    <p class="intro">There are only 37 known Vermeers, of which 35 are in public collections. My life's goal is to see all of them.</p>
+    <p class="intro">Vermeer was the greatest painter of the Dutch Golden Age, known for his uncommon ability to capture the world both as it was and as he wished it would be.</p>
     <p class="tally" id="tally"></p>
   </header>
 
