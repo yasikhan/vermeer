@@ -41,107 +41,249 @@
     return function () { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
   }
 
-  // Bands across the moulding, outer edge (0) to sight edge (1).
-  function ebonyProfile(id, t, len) {
-    var wl = Math.max(5, t * 0.42), g = Math.max(1.3, t * 0.055), rib = Math.max(1.5, t * 0.07);
-    var defs =
-      // The ripple: ridges that run along the side and undulate, the Dutch golf-lijst.
-      '<pattern id="' + id + 'w" patternUnits="userSpaceOnUse" width="' + f(wl) + '" height="' + f(g) + '">' +
-        '<rect width="' + f(wl) + '" height="' + f(g) + '" fill="#0e0b09"/>' +
-        '<path d="M0,' + f(g * 0.5) + ' C' + f(wl * 0.25) + ',' + f(g * 0.05) + ' ' + f(wl * 0.25) + ',' + f(g * 0.05) + ' ' + f(wl * 0.5) + ',' + f(g * 0.5) +
-          ' S' + f(wl * 0.75) + ',' + f(g * 0.95) + ' ' + f(wl) + ',' + f(g * 0.5) + '" fill="none" stroke="#6a5f52" stroke-width="' + f(g * 0.34) + '"/>' +
-      '</pattern>' +
-      // A cross-ripple: short ribs set across the moulding, like a row of teeth.
-      '<pattern id="' + id + 'r" patternUnits="userSpaceOnUse" width="' + f(rib) + '" height="' + f(t) + '">' +
-        '<rect width="' + f(rib) + '" height="' + f(t) + '" fill="#0c0a08"/>' +
-        '<rect width="' + f(rib * 0.42) + '" height="' + f(t) + '" fill="#564b40"/>' +
-      '</pattern>' +
-      '<linearGradient id="' + id + 'c" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#000" stop-opacity=".45"/><stop offset=".45" stop-color="#fff" stop-opacity=".07"/>' +
-        '<stop offset="1" stop-color="#000" stop-opacity=".5"/></linearGradient>' +
-      '<linearGradient id="' + id + 'p" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#231d18"/><stop offset=".3" stop-color="#0f0c0a"/>' +
-        '<stop offset=".6" stop-color="#4d443a"/><stop offset=".68" stop-color="#14100d"/><stop offset="1" stop-color="#0a0807"/></linearGradient>' +
-      '<linearGradient id="' + id + 'b" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#0d0b09"/><stop offset=".4" stop-color="#4a4036"/><stop offset="1" stop-color="#0d0b09"/></linearGradient>';
-    function band(a, b, fill, shade) {
-      var y = f(a * t), h = f((b - a) * t);
-      return '<rect x="0" y="' + y + '" width="' + f(len) + '" height="' + h + '" fill="' + fill + '"/>' +
-        (shade ? '<rect x="0" y="' + y + '" width="' + f(len) + '" height="' + h + '" fill="url(#' + id + 'c)"/>' : '');
-    }
-    var body =
-      band(0, 0.07, '#0e0c0a') +
-      band(0.07, 0.36, 'url(#' + id + 'w)', true) +
-      band(0.36, 0.40, '#5a5046') +
-      band(0.40, 0.70, 'url(#' + id + 'p)') +          // the flat, polished ebony plate
-      band(0.70, 0.73, '#0e0c0a') +
-      band(0.73, 0.90, 'url(#' + id + 'r)', true) +
-      band(0.90, 1, 'url(#' + id + 'b)');              // a small bead at the sight edge
-    return { defs: defs, body: body };
+  // A moulding is a stack of bands from the outer edge (0) in to the sight edge (1), each
+  // filled with a material: a gradient, a ripple pattern, gold, or wood grain. Every kind of
+  // frame below is just a different stack, matched to how that painting is framed today.
+  function moulding(id, t, len) {
+    var defs = '', body = '', n = 0;
+    var m = {
+      t: t, len: len,
+      defs: function (d) { defs += d; },
+      // A gradient across the band (top of the band to bottom).
+      grad: function (stops) {
+        var gid = id + 'g' + (n++);
+        defs += '<linearGradient id="' + gid + '" x1="0" y1="0" x2="0" y2="1">' + stops.map(function (s) {
+          return '<stop offset="' + s[0] + '" stop-color="' + s[1] + '"' + (s[2] != null ? ' stop-opacity="' + s[2] + '"' : '') + '/>';
+        }).join('') + '</linearGradient>';
+        return 'url(#' + gid + ')';
+      },
+      // Ridges that run along the side and undulate: the Dutch golf-lijst.
+      wave: function (base, hi) {
+        var pid = id + 'w' + (n++), wl = Math.max(5, t * 0.42), g = Math.max(1.3, t * 0.055);
+        defs += '<pattern id="' + pid + '" patternUnits="userSpaceOnUse" width="' + f(wl) + '" height="' + f(g) + '">' +
+          '<rect width="' + f(wl) + '" height="' + f(g) + '" fill="' + base + '"/>' +
+          '<path d="M0,' + f(g * 0.5) + ' C' + f(wl * 0.25) + ',' + f(g * 0.05) + ' ' + f(wl * 0.25) + ',' + f(g * 0.05) + ' ' + f(wl * 0.5) + ',' + f(g * 0.5) +
+            ' S' + f(wl * 0.75) + ',' + f(g * 0.95) + ' ' + f(wl) + ',' + f(g * 0.5) + '" fill="none" stroke="' + hi + '" stroke-width="' + f(g * 0.34) + '"/></pattern>';
+        return 'url(#' + pid + ')';
+      },
+      // Short ribs set across the moulding, like a row of teeth.
+      rib: function (base, hi) {
+        var pid = id + 'r' + (n++), w = Math.max(1.5, t * 0.07);
+        defs += '<pattern id="' + pid + '" patternUnits="userSpaceOnUse" width="' + f(w) + '" height="' + f(t) + '">' +
+          '<rect width="' + f(w) + '" height="' + f(t) + '" fill="' + base + '"/><rect width="' + f(w * 0.42) + '" height="' + f(t) + '" fill="' + hi + '"/></pattern>';
+        return 'url(#' + pid + ')';
+      },
+      // Figured wood (burl walnut, tortoiseshell, plain walnut): turbulence mapped between a
+      // dark and a light colour, stretched along the side so the grain follows the moulding.
+      grain: function (dark, light, fx, fy, seed) {
+        var fid = id + 'n' + (n++);
+        function ch(i) { return [dark[i], light[i]]; }
+        var rows = [0, 1, 2].map(function (i) {
+          var d = ch(i)[0], l = ch(i)[1], k = (l - d) / 0.4;
+          return f(k) + ' 0 0 0 ' + f(d - k * 0.3);
+        });
+        defs += '<filter id="' + fid + '" x="0" y="0" width="1" height="1" color-interpolation-filters="sRGB">' +
+          '<feTurbulence type="fractalNoise" baseFrequency="' + fx + ' ' + fy + '" numOctaves="4" seed="' + seed + '"/>' +
+          '<feColorMatrix type="matrix" values="' + rows.join(' ') + ' 0 0 0 0 1"/></filter>';
+        return fid;
+      },
+      // Bead and reel, in gold.
+      beads: function (a, b) {
+        var pid = id + 'k' + (n++), h = (b - a) * t;
+        defs += '<pattern id="' + pid + '" patternUnits="userSpaceOnUse" width="' + f(h * 1.7) + '" height="' + f(t) + '" y="' + f(a * t) + '">' +
+          '<rect width="' + f(h * 1.7) + '" height="' + f(h) + '" fill="#6b4b16"/>' +
+          '<circle cx="' + f(h * 0.55) + '" cy="' + f(h * 0.5) + '" r="' + f(h * 0.42) + '" fill="url(#' + id + 'L)"/>' +
+          '<ellipse cx="' + f(h * 1.32) + '" cy="' + f(h * 0.5) + '" rx="' + f(h * 0.18) + '" ry="' + f(h * 0.32) + '" fill="url(#' + id + 'L)"/></pattern>';
+        return 'url(#' + pid + ')';
+      },
+      band: function (a, b, fill, filter) {
+        body += '<rect x="0" y="' + f(a * t) + '" width="' + f(len) + '" height="' + f((b - a) * t) + '"' +
+          (filter ? ' filter="url(#' + filter + ')"' : ' fill="' + fill + '"') + '/>';
+      },
+      // A cushion of light over a band: dark at both edges, a soft sheen on the crown.
+      shade: function (a, b, sheen) {
+        m.band(a, b, m.grad([[0, '#000', 0.45], [0.42, '#fff', sheen == null ? 0.07 : sheen], [1, '#000', 0.5]]));
+      },
+      raw: function (svg) { body += svg; },
+      out: function () { return { defs: defs, body: body }; }
+    };
+    // A shared gold for beads and carving.
+    defs += '<radialGradient id="' + id + 'L" cx=".38" cy=".3" r=".75"><stop offset="0" stop-color="#e6cd8a"/>' +
+      '<stop offset=".45" stop-color="#a98538"/><stop offset="1" stop-color="#4e3610"/></radialGradient>';
+    return m;
   }
 
-  function giltProfile(id, t, len, rand) {
-    var leafW = Math.max(6, t * 0.6), torusH = t * 0.42, beadH = t * 0.17, gad = Math.max(2, t * 0.12);
-    var defs =
-      '<linearGradient id="' + id + 'g" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#7d5a1d"/><stop offset=".3" stop-color="#e9cd84"/><stop offset=".55" stop-color="#c39a45"/>' +
-        '<stop offset="1" stop-color="#6b4b16"/></linearGradient>' +
-      '<linearGradient id="' + id + 'h" x1="0" y1="0" x2="0" y2="1">' +
-        '<stop offset="0" stop-color="#5e4212"/><stop offset=".7" stop-color="#a87f34"/><stop offset="1" stop-color="#d7b66a"/></linearGradient>' +
-      '<radialGradient id="' + id + 'l" cx=".38" cy=".3" r=".75">' +
-        '<stop offset="0" stop-color="#f6e2a2"/><stop offset=".45" stop-color="#cfa752"/><stop offset="1" stop-color="#7a561a"/></radialGradient>' +
-      // Gadrooning on the outer edge.
-      '<pattern id="' + id + 'd" patternUnits="userSpaceOnUse" width="' + f(gad) + '" height="' + f(t) + '">' +
-        '<rect width="' + f(gad) + '" height="' + f(t) + '" fill="#8f6a28"/>' +
-        '<ellipse cx="' + f(gad / 2) + '" cy="' + f(t * 0.15) + '" rx="' + f(gad * 0.36) + '" ry="' + f(t * 0.09) + '" fill="url(#' + id + 'l)"/>' +
-      '</pattern>' +
-      // The carved leaf torus: overlapping leaves with a central vein, and a dart between each.
-      '<pattern id="' + id + 'f" patternUnits="userSpaceOnUse" width="' + f(leafW) + '" height="' + f(t) + '" y="' + f(t * 0.22) + '">' +
-        '<rect width="' + f(leafW) + '" height="' + f(torusH) + '" fill="url(#' + id + 'g)"/>' +
-        '<path d="M' + f(leafW * 0.04) + ',' + f(torusH * 0.5) + ' C' + f(leafW * 0.3) + ',' + f(torusH * -0.02) + ' ' + f(leafW * 0.78) + ',' + f(torusH * 0.08) + ' ' + f(leafW * 0.98) + ',' + f(torusH * 0.5) +
-          ' C' + f(leafW * 0.78) + ',' + f(torusH * 0.92) + ' ' + f(leafW * 0.3) + ',' + f(torusH * 1.02) + ' ' + f(leafW * 0.04) + ',' + f(torusH * 0.5) + 'Z" fill="url(#' + id + 'l)" stroke="#5a3f10" stroke-opacity=".55" stroke-width="' + f(Math.max(0.5, t * 0.025)) + '"/>' +
-        '<path d="M' + f(leafW * 0.12) + ',' + f(torusH * 0.5) + ' Q' + f(leafW * 0.5) + ',' + f(torusH * 0.4) + ' ' + f(leafW * 0.9) + ',' + f(torusH * 0.5) + '" fill="none" stroke="#6e4e17" stroke-opacity=".6" stroke-width="' + f(Math.max(0.4, t * 0.018)) + '"/>' +
-      '</pattern>' +
-      // Bead and reel at the sight edge.
-      '<pattern id="' + id + 'k" patternUnits="userSpaceOnUse" width="' + f(beadH * 1.7) + '" height="' + f(t) + '" y="' + f(t * 0.83) + '">' +
-        '<rect width="' + f(beadH * 1.7) + '" height="' + f(beadH) + '" fill="#6b4b16"/>' +
-        '<circle cx="' + f(beadH * 0.55) + '" cy="' + f(beadH * 0.5) + '" r="' + f(beadH * 0.42) + '" fill="url(#' + id + 'l)"/>' +
-        '<ellipse cx="' + f(beadH * 1.32) + '" cy="' + f(beadH * 0.5) + '" rx="' + f(beadH * 0.18) + '" ry="' + f(beadH * 0.32) + '" fill="url(#' + id + 'l)"/>' +
-      '</pattern>';
-    function band(a, b, fill) {
-      return '<rect x="0" y="' + f(a * t) + '" width="' + f(len) + '" height="' + f((b - a) * t) + '" fill="' + fill + '"/>';
+  var EBONY = { base: '#0e0b09', hi: '#6a5f52', step: '#5a5046',
+    plate: [[0, '#231d18'], [0.3, '#0f0c0a'], [0.6, '#4d443a'], [0.68, '#14100d'], [1, '#0a0807']] };
+  var ROSEWOOD = { base: '#1c0b06', hi: '#7a4434', step: '#5e3424',
+    plate: [[0, '#3a1a10'], [0.3, '#22100a'], [0.6, '#6a3626'], [0.68, '#2a130c'], [1, '#160805']] };
+  var GOLD_SIGHT = [[0, '#5e4212'], [0.4, '#e9cd84'], [0.7, '#b48a3c'], [1, '#5e4212']];
+  var EBONY_SIGHT = [[0, '#0d0b09'], [0.4, '#4a4036'], [1, '#0d0b09']];
+
+  // Ebony (or rosewood) with ripple and cross-ripple bands around a polished flat plate.
+  // `plate: 'tortoise'` gives the mottled flat of A Lady Writing.
+  function rippleFrame(m, o) {
+    var w = o.wood || EBONY, t = m.t;
+    m.band(0, 0.07, '#0e0c0a');
+    m.band(0.07, 0.36, m.wave(w.base, w.hi)); m.shade(0.07, 0.36);
+    m.band(0.36, 0.40, w.step);
+    if (o.plate === 'tortoise') {
+      m.band(0.40, 0.70, null, m.grain([0.09, 0.04, 0.02], [0.42, 0.22, 0.08], 0.1, 0.25, 3));
+      m.shade(0.40, 0.70, 0.12);
+    } else m.band(0.40, 0.70, m.grad(w.plate));
+    m.band(0.70, 0.73, '#0e0c0a');
+    m.band(0.73, 0.90, m.rib(w.base, w.hi)); m.shade(0.73, 0.90);
+    m.band(0.90, 1, m.grad(o.gilt ? GOLD_SIGHT : EBONY_SIGHT));
+  }
+
+  // Plain black ebony with stepped profiles and no ripple: a cushion, a hollow, an ogee.
+  // `gilt` adds the gilded inner slip some museums use (Edinburgh, Dublin, the Royal Collection).
+  function plainFrame(m, o) {
+    m.band(0, 0.05, '#0b0908');
+    m.band(0.05, 0.32, m.grad([[0, '#0c0a08'], [0.4, '#3d362e'], [1, '#0a0807']]));
+    m.band(0.32, 0.36, '#4a4138');
+    m.band(0.36, 0.62, m.grad([[0, '#060504'], [0.5, '#161310'], [1, '#2c261f']]));
+    m.band(0.62, 0.65, '#4a4138');
+    if (o.gilt) {
+      m.band(0.65, 0.80, m.grad([[0, '#2a241e'], [0.5, '#0d0b09'], [1, '#2a241e']]));
+      m.band(0.80, 1, m.grad([[0, '#5e4212'], [0.25, '#b48a3c'], [0.5, '#ecd28c'], [0.8, '#a87f34'], [1, '#5e4212']]));
+    } else {
+      m.band(0.65, 0.88, m.grad([[0, '#2a241e'], [0.5, '#0d0b09'], [1, '#3a332b']]));
+      m.band(0.88, 1, m.grad(EBONY_SIGHT));
     }
-    // Where the gold has rubbed through to the red bole beneath, on the high points.
-    var wear = '';
-    var n = Math.round(len / Math.max(8, t * 0.8));
-    for (var i = 0; i < n; i++) {
+  }
+
+  // Carved and gilded (French or Italian, 17th century): gadrooned edge, a leaf torus,
+  // a shadowed hollow and bead and reel, with the red bole showing where it's rubbed.
+  function carvedFrame(m, o, rand) {
+    var t = m.t, len = m.len, id = m.id;
+    var L = Math.max(10, t * 1.1), h = t * 0.42, gad = Math.max(2, t * 0.12);
+    var sw = f(Math.max(0.5, t * 0.022));
+    // One curled acanthus leaf from the vine at (x0,y0) out to its tip (x1,y1), turning back
+    // on itself at the end. `dir` flips it for the leaves below the vine.
+    function leaf(x0, y0, x1, y1, dir) {
+      var mx = (x0 + x1) / 2, my = (y0 + y1) / 2, w = h * 0.42 * dir;
+      return '<path d="M' + f(x0) + ',' + f(y0) +
+        ' Q' + f(mx - w) + ',' + f(my - w * 1.4) + ' ' + f(x1) + ',' + f(y1) +
+        ' q' + f(L * 0.09) + ',' + f(h * 0.1 * dir) + ' ' + f(L * 0.02) + ',' + f(h * 0.22 * dir) +
+        ' Q' + f(mx + w * 1.6) + ',' + f(my + w * 0.6) + ' ' + f(x0) + ',' + f(y0) + 'Z" fill="url(#' + m.lid + ')" stroke="#2a1c06" stroke-opacity=".7" stroke-width="' + sw + '"/>' +
+        '<path d="M' + f(x0) + ',' + f(y0) + ' Q' + f(mx) + ',' + f(my) + ' ' + f(x1 - L * 0.02) + ',' + f(y1 + h * 0.06 * dir) + '" fill="none" stroke="#3a2808" stroke-opacity=".6" stroke-width="' + sw + '"/>';
+    }
+    var pid = 'p' + Math.floor(rand() * 1e9);
+    m.defs('<pattern id="' + pid + 'd" patternUnits="userSpaceOnUse" width="' + f(gad) + '" height="' + f(t) + '">' +
+        '<rect width="' + f(gad) + '" height="' + f(t) + '" fill="#6a4e1c"/>' +
+        '<ellipse cx="' + f(gad / 2) + '" cy="' + f(t * 0.15) + '" rx="' + f(gad * 0.36) + '" ry="' + f(t * 0.09) + '" fill="url(#' + m.lid + ')"/></pattern>' +
+      // Scrolling foliage: a vine running along the side, throwing off curled acanthus leaves
+      // above and below, carved out of a dark recess so the gold stands proud.
+      '<pattern id="' + pid + 'f" patternUnits="userSpaceOnUse" width="' + f(L) + '" height="' + f(t) + '" y="' + f(t * 0.22) + '">' +
+        '<rect width="' + f(L) + '" height="' + f(h) + '" fill="#4a3410"/>' +
+        leaf(L * 0.04, h * 0.52, L * 0.42, h * 0.04, 1) + leaf(L * 0.54, h * 0.48, L * 0.92, h * 0.96, -1) +
+        leaf(L * 0.3, h * 0.3, L * 0.5, h * 0.62, -1) + leaf(L * 0.8, h * 0.7, L * 1.0, h * 0.38, 1) +
+        '<path d="M0,' + f(h * 0.5) + ' C' + f(L * 0.25) + ',' + f(h * 0.12) + ' ' + f(L * 0.25) + ',' + f(h * 0.12) + ' ' + f(L * 0.5) + ',' + f(h * 0.5) +
+          ' S' + f(L * 0.75) + ',' + f(h * 0.88) + ' ' + f(L) + ',' + f(h * 0.5) + '" fill="none" stroke="url(#' + m.lid + ')" stroke-width="' + f(h * 0.17) + '" stroke-linecap="round"/>' +
+        '<circle cx="' + f(L * 0.5) + '" cy="' + f(h * 0.2) + '" r="' + f(h * 0.08) + '" fill="url(#' + m.lid + ')"/>' +
+        '<circle cx="' + f(L * 0.02) + '" cy="' + f(h * 0.82) + '" r="' + f(h * 0.08) + '" fill="url(#' + m.lid + ')"/>' +
+        '<circle cx="' + f(L * 1.02) + '" cy="' + f(h * 0.82) + '" r="' + f(h * 0.08) + '" fill="url(#' + m.lid + ')"/>' +
+      '</pattern>');
+    m.band(0, 0.05, '#5e4212');
+    m.band(0.05, 0.22, 'url(#' + pid + 'd)');
+    m.band(0.22, 0.64, 'url(#' + pid + 'f)');
+    m.shade(0.22, 0.64, 0.05);
+    m.band(0.64, 0.83, m.grad([[0, '#3a280a'], [0.7, '#86662a'], [1, '#b8984e']]));
+    m.band(0.83, 1, m.beads(0.83, 1));
+    var wear = '', k = Math.round(len / Math.max(8, t * 0.8));
+    for (var i = 0; i < k; i++) {
       wear += '<ellipse cx="' + f(rand() * len) + '" cy="' + f(t * (0.26 + rand() * 0.1)) + '" rx="' + f(t * (0.03 + rand() * 0.06)) +
         '" ry="' + f(t * (0.015 + rand() * 0.02)) + '" fill="#8a3a22" fill-opacity="' + f(0.25 + rand() * 0.3) + '"/>';
     }
-    var body =
-      band(0, 0.05, '#5e4212') +
-      band(0.05, 0.22, 'url(#' + id + 'd)') +
-      band(0.22, 0.64, 'url(#' + id + 'f)') +
-      band(0.64, 0.83, 'url(#' + id + 'h)') +          // the shadowed hollow
-      band(0.83, 1, 'url(#' + id + 'k)') +
-      wear;
-    return { defs: defs, body: body };
+    m.raw(wear);
   }
+
+  // A plainer gilt frame (Dresden's gallery frames): a broad gilded flat between beads.
+  function giltFrame(m) {
+    m.band(0, 0.07, m.grad([[0, '#5e4212'], [0.5, '#c39a45'], [1, '#6b4b16']]));
+    m.band(0.07, 0.17, m.beads(0.07, 0.17));
+    m.band(0.17, 0.60, m.grad([[0, '#a07a32'], [0.35, '#dcc07a'], [0.7, '#c29a4a'], [1, '#8f6a28']]));
+    m.band(0.60, 0.64, '#6b4b16');
+    m.band(0.64, 0.84, m.grad([[0, '#7d5a1d'], [0.35, '#ecd28c'], [0.6, '#c39a45'], [1, '#6b4b16']]));
+    m.band(0.84, 1, m.beads(0.84, 1));
+  }
+
+  // Burl walnut veneer on broad cushions. The Milkmaid's frame adds ripple bands at both edges.
+  function burlFrame(m, o) {
+    var dark = [0.14, 0.07, 0.03], light = [0.62, 0.36, 0.15];
+    if (o.ripple) {
+      m.band(0, 0.10, m.wave(ROSEWOOD.base, ROSEWOOD.hi)); m.shade(0, 0.10);
+      m.band(0.10, 0.72, null, m.grain(dark, light, 0.09, 0.24, 7)); m.shade(0.10, 0.72, 0.16);
+      m.band(0.72, 0.78, m.grad([[0, '#1c0b06'], [0.5, '#5e3424'], [1, '#1c0b06']]));
+      m.band(0.78, 0.92, m.wave(ROSEWOOD.base, ROSEWOOD.hi)); m.shade(0.78, 0.92);
+      m.band(0.92, 1, m.grad([[0, '#160805'], [0.4, '#4a2416'], [1, '#160805']]));
+    } else {
+      m.band(0, 0.04, '#1a0d06');
+      m.band(0.04, 0.60, null, m.grain(dark, light, 0.08, 0.2, 11)); m.shade(0.04, 0.60, 0.18);
+      m.band(0.60, 0.65, '#1a0d06');
+      m.band(0.65, 0.92, null, m.grain(dark, light, 0.09, 0.22, 13)); m.shade(0.65, 0.92, 0.14);
+      m.band(0.92, 1, m.grad(EBONY_SIGHT));
+    }
+  }
+
+  // The Lacemaker's frame: a broad walnut flat with floral marquetry, around an ebony inner frame.
+  function marquetryFrame(m, o, rand) {
+    var t = m.t, len = m.len, a = 0.05, b = 0.58, h = (b - a) * t;
+    m.band(0, a, '#120a05');
+    m.band(a, b, null, m.grain([0.4, 0.23, 0.08], [0.74, 0.48, 0.2], 0.012, 0.3, 17));
+    m.shade(a, b, 0.1);
+    // Inlaid flowers and leaves along the flat.
+    var step = h * 1.5, out = '';
+    for (var x = step * 0.5; x < len; x += step) {
+      var cx = x + (rand() - 0.5) * h * 0.2, cy = (a * t + b * t) / 2 + (rand() - 0.5) * h * 0.15, r = h * 0.17;
+      for (var p = 0; p < 5; p++) {
+        var ang = p * 72 + rand() * 20;
+        out += '<ellipse cx="' + f(cx + Math.cos(ang * Math.PI / 180) * r) + '" cy="' + f(cy + Math.sin(ang * Math.PI / 180) * r) + '" rx="' + f(r * 0.75) +
+          '" ry="' + f(r * 0.42) + '" transform="rotate(' + f(ang) + ' ' + f(cx + Math.cos(ang * Math.PI / 180) * r) + ' ' + f(cy + Math.sin(ang * Math.PI / 180) * r) + ')" fill="#3a1d0a" fill-opacity=".72"/>';
+      }
+      out += '<circle cx="' + f(cx) + '" cy="' + f(cy) + '" r="' + f(r * 0.45) + '" fill="#e7bf7a" fill-opacity=".8"/>';
+      out += '<path d="M' + f(cx + r * 1.4) + ',' + f(cy) + ' q' + f(r * 1.2) + ',' + f(-r * 1.1) + ' ' + f(r * 2.6) + ',' + f(-r * 0.3) +
+        ' q' + f(-r * 1.2) + ',' + f(r * 1.1) + ' ' + f(-r * 2.6) + ',' + f(r * 0.3) + 'Z" fill="#3a1d0a" fill-opacity=".55"/>';
+    }
+    m.raw(out);
+    m.band(b, b + 0.04, '#0b0908');
+    m.band(b + 0.04, 0.80, m.grad([[0, '#0c0a08'], [0.4, '#3d362e'], [1, '#0a0807']]));
+    m.band(0.80, 0.84, '#4a4138');
+    m.band(0.84, 0.95, m.grad([[0, '#2a241e'], [0.5, '#0d0b09'], [1, '#2a241e']]));
+    m.band(0.95, 1, m.grad(GOLD_SIGHT));
+  }
+
+  // How each kind draws, and how wide it runs relative to an ordinary frame.
+  var KINDS = {
+    'ripple':          { draw: rippleFrame },
+    'ripple-gilt':     { draw: rippleFrame, gilt: true },
+    'ripple-rosewood': { draw: rippleFrame, wood: ROSEWOOD },
+    'ripple-tortoise': { draw: rippleFrame, plate: 'tortoise' },
+    'ebony':           { draw: plainFrame },
+    'ebony-gilt':      { draw: plainFrame, gilt: true },
+    'carved':          { draw: carvedFrame, width: 1.15, corners: true, centres: true },
+    'gilt':            { draw: giltFrame, corners: true },
+    'burl':            { draw: burlFrame, width: 1.35 },
+    'burl-ripple':     { draw: burlFrame, ripple: true, width: 1.2 },
+    'marquetry':       { draw: marquetryFrame, width: 2.4 }
+  };
+  function kindOf(name) { return KINDS[name] || KINDS.ebony; }
 
   // A carved rosette over each mitre of a gilt frame.
-  function cartouche(id, cx, cy, t) {
-    var r = t * 0.36, out = '';
-    for (var i = 0; i < 4; i++) {
-      var a = i * Math.PI / 2 + Math.PI / 4;
-      out += '<ellipse cx="' + f(cx + Math.cos(a) * r * 0.62) + '" cy="' + f(cy + Math.sin(a) * r * 0.62) + '" rx="' + f(r * 0.55) + '" ry="' + f(r * 0.32) +
-        '" transform="rotate(' + f(a * 180 / Math.PI) + ' ' + f(cx + Math.cos(a) * r * 0.62) + ' ' + f(cy + Math.sin(a) * r * 0.62) + ')" fill="url(#' + id + 'l)" stroke="#5a3f10" stroke-opacity=".5" stroke-width=".6"/>';
+  function cartouche(lid, cx, cy, t) {
+    var r = t * 0.3, out = '';
+    for (var i = 0; i < 6; i++) {
+      var a = i * Math.PI / 3 + Math.PI / 6;
+      out += '<ellipse cx="' + f(cx + Math.cos(a) * r * 0.62) + '" cy="' + f(cy + Math.sin(a) * r * 0.62) + '" rx="' + f(r * 0.5) + '" ry="' + f(r * 0.26) +
+        '" transform="rotate(' + f(a * 180 / Math.PI) + ' ' + f(cx + Math.cos(a) * r * 0.62) + ' ' + f(cy + Math.sin(a) * r * 0.62) + ')" fill="url(#' + lid + ')" stroke="#5a3f10" stroke-opacity=".5" stroke-width=".6"/>';
     }
-    return out + '<circle cx="' + f(cx) + '" cy="' + f(cy) + '" r="' + f(r * 0.34) + '" fill="url(#' + id + 'l)" stroke="#5a3f10" stroke-opacity=".6" stroke-width=".6"/>';
+    return out + '<circle cx="' + f(cx) + '" cy="' + f(cy) + '" r="' + f(r * 0.34) + '" fill="url(#' + lid + ')" stroke="#5a3f10" stroke-opacity=".6" stroke-width=".6"/>';
   }
 
-  function frameSVG(W, H, t, kind, key) {
+  function frameSVG(W, H, t, kindName, key) {
     var id = 'fr' + (++frameSeq);
-    var rand = rng(key);
+    var rand = rng(key), kind = kindOf(kindName);
     var sides = [
       // [length, transform from side coordinates, light]
       { len: W, m: '1 0 0 1 0 0', light: 'rgba(255,248,225,.16)' },        // top
@@ -151,7 +293,10 @@
     ];
     var defs = '', body = '';
     sides.forEach(function (sd, i) {
-      var p = kind === 'gilt' ? giltProfile(id + 's' + i, t, sd.len, rand) : ebonyProfile(id + 's' + i, t, sd.len);
+      var sid = id + 's' + i, m = moulding(sid, t, sd.len);
+      m.id = sid; m.lid = sid + 'L';
+      kind.draw(m, kind, rand);
+      var p = m.out();
       defs += p.defs +
         '<clipPath id="' + id + 'm' + i + '"><path d="M0,0 L' + f(sd.len) + ',0 L' + f(sd.len - t) + ',' + f(t) + ' L' + f(t) + ',' + f(t) + 'Z"/></clipPath>';
       body += '<g transform="matrix(' + sd.m + ')"><g clip-path="url(#' + id + 'm' + i + ')">' + p.body +
@@ -161,9 +306,12 @@
     var mitre = 'M0,0L' + f(t) + ',' + f(t) + 'M' + f(W) + ',0L' + f(W - t) + ',' + f(t) +
       'M0,' + f(H) + 'L' + f(t) + ',' + f(H - t) + 'M' + f(W) + ',' + f(H) + 'L' + f(W - t) + ',' + f(H - t);
     body += '<path d="' + mitre + '" stroke="#000" stroke-opacity=".35" stroke-width=".6"/>';
-    if (kind === 'gilt') {
-      var c = t * 0.43, g = id + 's0';
-      [[c, c], [W - c, c], [c, H - c], [W - c, H - c]].forEach(function (pt) { body += cartouche(g, pt[0], pt[1], t); });
+    if (kind.corners) {
+      var c = t * 0.43, lid = id + 's0L';
+      var pts = [[c, c], [W - c, c], [c, H - c], [W - c, H - c]];
+      // Louis XIV frames also carry a cartouche at the centre of each side.
+      if (kind.centres) pts.push([W / 2, c], [W / 2, H - c], [c, H / 2], [W - c, H / 2]);
+      pts.forEach(function (pt) { body += cartouche(lid, pt[0], pt[1], t); });
     }
     // The outer edge catches the window light along the top and left.
     body += '<path d="M0.5,' + f(H) + 'L0.5,0.5L' + f(W) + ',0.5" fill="none" stroke="rgba(255,245,215,.18)" stroke-width="1"/>';
@@ -208,18 +356,19 @@
     var floor = mobile ? 120 : 84;
     if (h < floor) { wd *= floor / h; h = floor; }
     // Period frames are deep: a Dutch ebony moulding often ran to a fifth of the picture's width.
-    var t = Math.round(Math.min(46, Math.max(15, 5 + 0.15 * Math.max(h, wd))));
+    var k = kindOf(w.frame).width || 1;
+    var t = Math.round(Math.min(46 * k, Math.max(15, (5 + 0.15 * Math.max(h, wd)) * k)));
 
     var work = el('figure', 'work');
     var hanger = el('div', 'work-hanger');
-    var frame = el('div', 'frame ' + (w.frame || 'ebony') + (w.stolen ? ' empty' : ''));
+    var frame = el('div', 'frame' + (w.stolen ? ' empty' : ''));
     frame.style.setProperty('--t', t + 'px');
     var canvas = el('div', 'canvas');
     var cw = Math.round(wd), ch = Math.round(h);
     canvas.style.width = cw + 'px';
     canvas.style.height = ch + 'px';
     frame.appendChild(cord());
-    frame.appendChild(frameSVG(cw + 2 * t, ch + 2 * t, t, w.frame || 'ebony', w.id));
+    frame.appendChild(frameSVG(cw + 2 * t, ch + 2 * t, t, w.frame, w.id));
     if (w.stolen) {
       canvas.setAttribute('role', 'img');
       canvas.setAttribute('aria-label', 'An empty frame where ' + w.title + ' once hung');

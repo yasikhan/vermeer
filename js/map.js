@@ -461,10 +461,9 @@
         c.works.push(w);
       });
       var seen = works.filter(function (w) { return w.seen; }).length;
-      document.getElementById('tally').textContent =
-        seen === 0 ? 'all ' + works.length + ' still to see' :
-        seen === works.length ? 'all ' + works.length + ' seen' :
-        seen + ' of ' + works.length + ' seen';
+      var tally = document.getElementById('tally');
+      tally.textContent = seen + '/' + works.length;
+      tally.setAttribute('aria-label', seen + ' of ' + works.length + ' seen');
       home = computeHome();
       applyVB(home);
       recluster();

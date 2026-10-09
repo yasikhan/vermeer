@@ -1,26 +1,26 @@
 """Source of truth for data/paintings.json. Edit here, then run: python3 scripts/paintings_src.py"""
 import json, pathlib
 
-M = {  # museum -> (city, country, lat, lon, frame)
-  "Rijksmuseum": ("Amsterdam", "Netherlands", 52.3600, 4.8852, "ebony"),
-  "Mauritshuis": ("The Hague", "Netherlands", 52.0804, 4.3143, "ebony"),
-  "Gemäldegalerie": ("Berlin", "Germany", 52.5085, 13.3649, "ebony"),
-  "Herzog Anton Ulrich Museum": ("Braunschweig", "Germany", 52.2659, 10.5339, "ebony"),
-  "Gemäldegalerie Alte Meister": ("Dresden", "Germany", 51.0531, 13.7339, "gilt"),
-  "Städel Museum": ("Frankfurt", "Germany", 50.1031, 8.6741, "ebony"),
-  "Kunsthistorisches Museum": ("Vienna", "Austria", 48.2038, 16.3617, "gilt"),
-  "Musée du Louvre": ("Paris", "France", 48.8606, 2.3376, "gilt"),
-  "The National Gallery": ("London", "United Kingdom", 51.5089, -0.1283, "gilt"),
-  "Kenwood House": ("London", "United Kingdom", 51.5713, -0.1676, "gilt"),
-  "Royal Collection, Buckingham Palace": ("London", "United Kingdom", 51.5014, -0.1419, "gilt"),
-  "Scottish National Gallery": ("Edinburgh", "United Kingdom", 55.9509, -3.1958, "gilt"),
-  "National Gallery of Ireland": ("Dublin", "Ireland", 53.3409, -6.2525, "ebony"),
-  "The Metropolitan Museum of Art": ("New York", "United States", 40.7794, -73.9632, "ebony"),
-  "The Frick Collection": ("New York", "United States", 40.7712, -73.9673, "gilt"),
-  "The Leiden Collection": ("New York", "United States", 40.7740, -73.9650, "ebony"),
-  "National Gallery of Art": ("Washington, D.C.", "United States", 38.8913, -77.0199, "ebony"),
-  "Isabella Stewart Gardner Museum": ("Boston", "United States", 42.3382, -71.0991, "gilt"),
-  "National Museum of Western Art": ("Tokyo", "Japan", 35.7155, 139.7757, "gilt"),
+M = {  # museum -> (city, country, lat, lon)
+  "Rijksmuseum": ("Amsterdam", "Netherlands", 52.3600, 4.8852),
+  "Mauritshuis": ("The Hague", "Netherlands", 52.0804, 4.3143),
+  "Gemäldegalerie": ("Berlin", "Germany", 52.5085, 13.3649),
+  "Herzog Anton Ulrich Museum": ("Braunschweig", "Germany", 52.2659, 10.5339),
+  "Gemäldegalerie Alte Meister": ("Dresden", "Germany", 51.0531, 13.7339),
+  "Städel Museum": ("Frankfurt", "Germany", 50.1031, 8.6741),
+  "Kunsthistorisches Museum": ("Vienna", "Austria", 48.2038, 16.3617),
+  "Musée du Louvre": ("Paris", "France", 48.8606, 2.3376),
+  "The National Gallery": ("London", "United Kingdom", 51.5089, -0.1283),
+  "Kenwood House": ("London", "United Kingdom", 51.5713, -0.1676),
+  "Royal Collection, Buckingham Palace": ("London", "United Kingdom", 51.5014, -0.1419),
+  "Scottish National Gallery": ("Edinburgh", "United Kingdom", 55.9509, -3.1958),
+  "National Gallery of Ireland": ("Dublin", "Ireland", 53.3409, -6.2525),
+  "The Metropolitan Museum of Art": ("New York", "United States", 40.7794, -73.9632),
+  "The Frick Collection": ("New York", "United States", 40.7712, -73.9673),
+  "The Leiden Collection": ("New York", "United States", 40.7740, -73.9650),
+  "National Gallery of Art": ("Washington, D.C.", "United States", 38.8913, -77.0199),
+  "Isabella Stewart Gardner Museum": ("Boston", "United States", 42.3382, -71.0991),
+  "National Museum of Western Art": ("Tokyo", "Japan", 35.7155, 139.7757),
 }
 
 CONTINENT = {
@@ -28,6 +28,37 @@ CONTINENT = {
   "United Kingdom": "Europe", "Ireland": "Europe",
   "United States": "North America",
   "Japan": "Asia",
+}
+
+# How each painting is framed today, matched from photographs of it on the wall
+# (essentialvermeer.com/framed). Kinds are drawn by js/frames.js:
+#   ripple / ripple-gilt / ripple-rosewood / ripple-tortoise  Dutch ripple frames
+#   ebony / ebony-gilt   plain black stepped profiles (with a gilded inner slip)
+#   carved / gilt        carved French or Italian gilt / a plainer gilded frame
+#   burl / burl-ripple   burl walnut veneer (with ripple bands)
+#   marquetry            walnut with floral marquetry around an ebony inner frame
+FRAME = {
+  "milkmaid": "burl-ripple", "little-street": "carved", "woman-reading-letter": "carved",
+  "love-letter": "ripple-rosewood",
+  "pearl-earring": "carved", "view-of-delft": "ebony", "diana": "carved",
+  "glass-of-wine": "ripple", "pearl-necklace": "ebony",
+  "girl-wine-glass": "ripple",
+  "procuress": "gilt", "open-window": "ebony",
+  "geographer": "ebony",
+  "art-of-painting": "ripple",
+  "lacemaker": "marquetry", "astronomer": "burl",
+  "standing-virginal": "ripple", "seated-virginal": "ripple",
+  "guitar-player": "ebony",
+  "music-lesson": "ebony-gilt",
+  "martha-mary": "ebony-gilt",
+  "letter-maid": "ebony-gilt",
+  "water-pitcher": "ebony", "maid-asleep": "ripple-gilt", "lute": "ripple-gilt",
+  "study-young-woman": "carved", "catholic-faith": "ebony",
+  "officer": "carved", "interrupted": "carved", "mistress-maid": "carved",
+  "leiden-virginal": "carved",
+  "balance": "ripple", "lady-writing": "ripple-tortoise", "red-hat": "ebony", "flute": "ripple",
+  "concert": "carved",
+  "praxedis": "ebony",
 }
 
 # id, title, year, museum, commons file, height cm, width cm, note
@@ -84,7 +115,8 @@ SEEN = {
 
 out = []
 for pid, title, year, museum, commons, h, w, note in P:
-    city, country, lat, lon, frame = M[museum]
+    city, country, lat, lon = M[museum]
+    frame = FRAME[pid]
     d = dict(id=pid, title=title, year=year, museum=museum, city=city, country=country,
              continent=CONTINENT[country],
              lat=lat, lon=lon, heightCm=h, widthCm=w, frame=frame, commons=commons,

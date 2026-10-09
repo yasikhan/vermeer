@@ -11,7 +11,8 @@ GitHub Pages serves `main` as-is (`.nojekyll` is present). Pushing to `main` pub
 
 - `scripts/paintings_src.py` is the source of truth → writes `data/paintings.json`. Never
   hand-edit the JSON.
-- `frame` per museum is `ebony` or `gilt`. `stolen: true` (The Concert) renders an empty frame
+- `frame` is per painting (`FRAME` in `paintings_src.py`), matched to how it's framed today from
+  the photos at essentialvermeer.com/framed. The kinds are listed in `KINDS` in `js/frames.js`. `stolen: true` (The Concert) renders an empty frame
   with no image, and `fetch_images.py` skips it.
 - `continent` comes from `CONTINENT` (by country) in `paintings_src.py`; the city list groups by it.
 - `SEEN` in `paintings_src.py` (id → year, or `True`) marks paintings seen in person. It drives
@@ -41,9 +42,13 @@ GitHub Pages serves `main` as-is (`.nojekyll` is present). Pushing to `main` pub
 
 `js/frames.js` draws each moulding as an inline SVG at the frame's pixel size. One side's
 profile is laid out in side coordinates (x along the side, y from the outer edge to the
-picture) and repeated on all four sides with mitred clips. Ebony is a Dutch ripple frame
-(*golf-lijst*); gilt is a carved leaf torus with bead-and-reel and corner rosettes. Thickness
-`t` scales with the picture, up to 46px.
+picture) and repeated on all four sides with mitred clips. A profile is a stack of bands built
+from shared materials in `moulding()`: gradients, ripple and cross-ripple patterns, bead and reel,
+and wood grain (`grain()`, turbulence mapped between two colours). Kinds: Dutch ebony ripple
+(plain, with a gilt sight edge, in rosewood, or with a tortoiseshell flat), plain stepped ebony
+(optionally with a gilt slip), carved gilt (scrolling acanthus, rosettes at corners and centres),
+plainer gilt, burl walnut (optionally with ripple bands) and the Lacemaker's marquetry.
+Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 
 ## Design rules
 
