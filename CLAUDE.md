@@ -78,8 +78,10 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
   above the room): carved cornice, sill, and two paned leaves swung open in perspective. Clicking
   it swings the leaves shut (cross-hatched panes; `.leaves-open` / `.leaves-shut` scale on their
   hinges in turn): `html[data-light="off"]` fades out the daylight
-  (`body::before`, `.room-scrim::after`, the map's sheen) and swaps `--cast` for an even, directionless
-  shadow. The choice is saved in `localStorage` (`vermeer-light`) and restored before first paint
+  (`body::before`, `.room-scrim::after`, the map's sheen), fades in a dim `--dusk` (`body::after`,
+  `.room-scrim::before`), dims `--paper`, darkens `--wall-ink-2` to stay legible, and swaps `--cast`
+  for an even, directionless shadow. `--daylight` is a hard falloff plus a soft shaft (a conic wedge
+  from the corner). The choice is saved in `localStorage` (`vermeer-light`) and restored before first paint
   by an inline script in `<head>`. Anything new that depends on light needs an off state.
 - Animation: the rise and return use the Web Animations API with staggered delays.
   `prefers-reduced-motion` gets plain fades. Hidden tabs skip animation entirely, because rAF

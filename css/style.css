@@ -26,11 +26,17 @@
 /* ============ VARIABLES ============ */
 :root {
   /* The wall: whitewashed plaster. With the shutters open it's lit from a window at upper left,
-     bright by the window and falling off into shade, as behind the Milkmaid. */
+     bright by the window and falling off hard into shade, as behind the Milkmaid, with a soft
+     shaft of light slanting down through it. Shut, the room goes dusky: only a little light
+     leaks round the leaves, so the far side sinks into shadow. */
   --plaster: #D4D1C8;
-  --daylight: radial-gradient(140% 110% at 0 0, #FAF9F5 0%, #E7E5DE 26%, #D1CEC5 58%, #BCB8AD 100%);
+  --daylight:
+    conic-gradient(from 112deg at 0 0, rgba(255,253,242,0) 0deg, rgba(255,253,242,0.18) 10deg,
+      rgba(255,253,242,0.28) 17deg, rgba(255,253,242,0.18) 24deg, rgba(255,253,242,0) 36deg),
+    radial-gradient(140% 115% at 0 0, #FFFEF9 0%, #EEECE5 18%, #D3D0C7 48%, #B9B5AA 78%, #ACA89C 100%);
+  --dusk: radial-gradient(130% 110% at 0 0, #B3B0A7 0%, #A4A198 45%, #928F86 100%);
   --wall-ink: #1F2024;   /* text written straight on the wall: bone black */
-  --wall-ink-2: #4C4943; /* secondary text on the wall */
+  --wall-ink-2: #403D38; /* secondary text on the wall */
   --wall-rule: rgba(31, 32, 36, 0.18);
   --paper: #E7DEC8;      /* objects on the wall: the map sheet, wall labels */
   --gall: #35281E;       /* iron-gall ink */
@@ -44,6 +50,9 @@
   --body: 'IM Fell DW Pica', Georgia, serif;
 }
 
+/* Shutters closed: the paper dims with the wall, and secondary text darkens to stay legible on the dusk. */
+[data-light="off"] { --paper: #CDC4AE; --wall-ink-2: #2A2824; }
+
 /* ============ RESET & BASE ============ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { font-size: 17px; -webkit-font-smoothing: antialiased; }
@@ -54,13 +63,15 @@ body {
 }
 ::selection { background: rgba(191, 147, 31, 0.4); }
 /* Daylight on the plaster, fixed to the screen like the window it comes from.
-   Closing the shutters (html[data-light="off"]) fades it out to bare, evenly lit plaster. */
-body::before {
+   Closing the shutters (html[data-light="off"]) fades it out and the dusk in. */
+body::before, body::after {
   content: ''; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background: var(--daylight);
-  transition: opacity 0.8s ease;
+  transition: opacity 0.9s ease;
 }
+body::before { background: var(--daylight); }
+body::after { background: var(--dusk); opacity: 0; }
 [data-light="off"] body::before { opacity: 0; }
+[data-light="off"] body::after { opacity: 1; }
 
 /* ============ CONTENT PAGE LAYOUT ============ */
 .content-body {
