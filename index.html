@@ -21,7 +21,7 @@
     --land: #EDE6D3;
     /* Light comes from a window at upper left, as in nearly every Vermeer interior,
        so every cast shadow in the page falls down and to the right. */
-    --cast: 8px 12px 22px rgba(53, 40, 30, 0.26), 2px 3px 5px rgba(53, 40, 30, 0.2);
+    --cast: 8px 12px 22px rgba(8, 12, 9, 0.5), 2px 3px 5px rgba(8, 12, 9, 0.4);
     --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0.21 0 0 0 0 0.16 0 0 0 0 0.1 0 0 0 0.5 -0.12'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23g)'/%3E%3C/svg%3E");
     --foxing: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='900' height='600'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.012' numOctaves='3' seed='11'/%3E%3CfeColorMatrix values='0 0 0 0 0.45 0 0 0 0 0.3 0 0 0 0 0.12 0 0 0 1.4 -0.78'/%3E%3C/filter%3E%3Crect width='900' height='600' filter='url(%23f)'/%3E%3C/svg%3E");
   }
@@ -31,19 +31,19 @@
   .title-page { text-align: center; margin: 0 auto; max-width: 36em; position: relative; }
   .title-page h1 { line-height: 1.05; margin-bottom: 1.4rem; }
   .title-page h1 span { display: block; }
-  .title-page .h1-small { font-size: 1.55rem; margin-bottom: 0.35rem; color: var(--umber); }
+  .title-page .h1-small { font-size: 1.55rem; margin-bottom: 0.35rem; color: var(--wall-ink-2); }
   .title-page .h1-large { font-size: 4rem; letter-spacing: 0.005em; }
   /* A printer's rule with a lozenge, the sort that closed a title block. */
   .rule {
     display: flex; align-items: center; justify-content: center; gap: 0.7rem;
     margin: 0 auto 1.8rem; width: 11rem;
   }
-  .rule::before, .rule::after { content: ''; flex: 1; height: 0; border-top: 1px solid var(--gall); }
-  .rule i { width: 7px; height: 7px; background: var(--gall); transform: rotate(45deg); }
+  .rule::before, .rule::after { content: ''; flex: 1; height: 0; border-top: 1px solid var(--wall-ink); }
+  .rule i { width: 7px; height: 7px; background: var(--wall-ink); transform: rotate(45deg); }
   .title-page .intro { font-size: 1.16rem; line-height: 1.8; text-wrap: pretty; }
   /* How many I've seen, set centred under the paragraph like the last line of a title block. */
   .title-page .tally {
-    font-family: var(--display); font-size: 1.6rem; line-height: 1; color: var(--gall);
+    font-family: var(--display); font-size: 1.6rem; line-height: 1; color: var(--wall-ink);
     margin: 0.5rem 0 0; letter-spacing: 0.04em;
   }
   .title-page .tally:empty { display: none; }
@@ -196,23 +196,23 @@
   .country { break-inside: avoid; padding-bottom: 1.4rem; }
   .country h3 {
     font-family: var(--body); font-style: italic; font-weight: 400; font-size: 1.15rem;
-    color: var(--umber); margin-bottom: 0.2rem;
+    color: var(--wall-ink-2); margin-bottom: 0.2rem;
   }
   .city-list { list-style: none; }
   .city-list li { break-inside: avoid; }
   .city-link {
     display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
     width: 100%; padding: 0.5rem 0;
-    background: none; border: none; border-bottom: 0.75px solid var(--gall-soft);
-    font-family: var(--body); font-size: 1.1rem; color: var(--gall); text-align: left; cursor: pointer;
+    background: none; border: none; border-bottom: 0.75px solid var(--wall-rule);
+    font-family: var(--body); font-size: 1.1rem; color: var(--wall-ink); text-align: left; cursor: pointer;
     transition: padding-left 0.15s;
   }
   .city-link:hover { padding-left: 0.3rem; }
-  .city-link:focus-visible { outline: 2px solid var(--ultramarine); outline-offset: 2px; }
-  .city-link .n { font-style: italic; font-size: 0.92rem; color: var(--umber); display: flex; align-items: baseline; gap: 0.55rem; }
+  .city-link:focus-visible { outline: 2px solid var(--ultramarine-pale); outline-offset: 2px; }
+  .city-link .n { font-style: italic; font-size: 0.92rem; color: var(--wall-ink-2); display: flex; align-items: baseline; gap: 0.55rem; }
   /* One circle per painting: filled with lead-tin once seen, an empty ink ring until then. */
   .ticks { display: inline-flex; gap: 3px; align-items: center; transform: translateY(-1px); }
-  .tick { width: 7px; height: 7px; border-radius: 50%; border: 0.75px solid var(--umber); }
+  .tick { width: 7px; height: 7px; border-radius: 50%; border: 0.75px solid var(--wall-ink-2); }
   .tick.seen { background: #C49A2C; border-color: #9C7A1E; }
 
   /* ============ THE ROOM (overlay) ============ */
@@ -225,9 +225,9 @@
   .room-scrim {
     position: fixed; inset: 0;
     background:
-      linear-gradient(128deg, rgba(255,252,240,0.5) 0%, rgba(255,252,240,0) 45%, rgba(53,40,30,0.1) 100%),
+      linear-gradient(128deg, rgba(255,252,240,0.07) 0%, rgba(255,252,240,0) 45%, rgba(8,12,9,0.25) 100%),
       var(--grain),
-      var(--limewash);
+      var(--damask);
     opacity: 0;
   }
   .room-inner {
@@ -237,7 +237,7 @@
   }
   .room-head { margin-bottom: 0.4rem; padding-right: 6rem; }
   .room-title { font-family: var(--display); font-weight: 400; font-size: 2.6rem; line-height: 1.12; }
-  .room-sub { font-style: italic; color: var(--umber); font-size: 1.08rem; }
+  .room-sub { font-style: italic; color: var(--wall-ink-2); font-size: 1.08rem; }
   .room-close {
     position: fixed; z-index: 2;
     top: 2.6rem; right: max(1rem, calc((100vw - 1240px) / 2 + 1.5rem));
@@ -252,11 +252,11 @@
     background: var(--wash); opacity: 0; transition: opacity 0.15s;
   }
   .room-close:hover::before { opacity: 1; }
-  .room-close:focus-visible { outline: 2px solid var(--ultramarine); outline-offset: 2px; }
+  .room-close:focus-visible { outline: 2px solid var(--ultramarine-pale); outline-offset: 2px; }
   .room-head, .room-sub, .museum-name, .room-close { opacity: 0; }
 
   .museum-name {
-    font-style: italic; font-size: 1.1rem; color: var(--gall);
+    font-style: italic; font-size: 1.1rem; color: var(--wall-ink);
     margin: 2.6rem 0 0;
   }
   /* Paintings hang with their centres on one line, the way a museum hangs a wall. */
@@ -303,13 +303,13 @@
     pointer-events: none;
   }
   .cord svg { display: block; width: 100%; height: 100%; overflow: visible; }
-  .cord line { stroke: #4a3b2c; stroke-width: 1.3px; vector-effect: non-scaling-stroke; }
-  .cord .cord-shadow { stroke: rgba(53, 40, 30, 0.18); stroke-width: 1.6px; }
+  .cord line { stroke: #8a7c63; stroke-width: 1.3px; vector-effect: non-scaling-stroke; }
+  .cord .cord-shadow { stroke: rgba(8, 12, 9, 0.35); stroke-width: 1.6px; }
   .cord .nail {
     position: absolute; left: 50%; top: -3px; width: 7px; height: 7px; margin-left: -3.5px;
     border-radius: 50%;
     background: radial-gradient(circle at 35% 32%, #8a7a66 0 20%, #3c3024 60%, #241b12 100%);
-    box-shadow: 2px 3px 3px rgba(53, 40, 30, 0.35);
+    box-shadow: 2px 3px 3px rgba(8, 12, 9, 0.5);
   }
 
   /* The Concert: the frame still hangs in Boston, around nothing. */

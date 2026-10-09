@@ -25,11 +25,15 @@
 
 /* ============ VARIABLES ============ */
 :root {
-  --limewash: #D9D6CC;   /* the wall: cool lime-wash, as behind The Milkmaid */
+  --damask: #2F3B33;     /* the wall: dark green silk damask, as in an old picture gallery */
+  --wall-ink: #E9E1CB;   /* text written straight on the wall */
+  --wall-ink-2: #B5AC94; /* secondary text on the wall */
+  --wall-rule: rgba(233, 225, 203, 0.22);
   --paper: #E7DEC8;      /* objects on the wall: the map sheet, wall labels */
   --gall: #35281E;       /* iron-gall ink */
   --umber: #6E5A45;      /* secondary text */
   --ultramarine: #24418C;
+  --ultramarine-pale: #9DB0E6; /* focus rings on the wall */
   --lead-tin: #DDB94A;   /* reserved for "seen" */
   --gall-soft: rgba(53, 40, 30, 0.18);
   --wash: rgba(53, 40, 30, 0.1);
@@ -42,8 +46,8 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { font-size: 17px; -webkit-font-smoothing: antialiased; }
 body {
-  font-family: var(--body); color: var(--gall);
-  background: var(--limewash); min-height: 100vh; overflow-x: hidden;
+  font-family: var(--body); color: var(--wall-ink);
+  background: var(--damask); min-height: 100vh; overflow-x: hidden;
   font-variant-numeric: oldstyle-nums;
 }
 ::selection { background: rgba(221, 185, 74, 0.55); }
@@ -52,11 +56,11 @@ body {
 .content-body {
   max-width: 640px; margin: 0 auto; padding: 4.5rem 2rem 6rem;
 }
-.content-body h1, .content-body h2 { font-family: var(--display); font-weight: 400; color: var(--gall); }
+.content-body h1, .content-body h2 { font-family: var(--display); font-weight: 400; color: var(--wall-ink); }
 .content-body h2 { font-size: 1.6rem; margin: 2.8rem 0 1rem; line-height: 1.2; }
 .content-body p {
   font-size: 1.1rem; line-height: 1.8;
-  color: var(--gall); margin-bottom: 1rem;
+  color: var(--wall-ink); margin-bottom: 1rem;
 }
 .content-body a {
   color: var(--ultramarine); text-decoration: underline;
@@ -70,13 +74,13 @@ body {
   text-align: center;
   font-family: var(--body); font-style: italic;
   font-size: 0.86rem;
-  color: var(--umber);
+  color: var(--wall-ink-2);
   padding: 2rem 1rem 2.6rem;
 }
 .site-footer a {
-  color: var(--umber);
+  color: var(--wall-ink-2);
   text-decoration: underline;
-  text-decoration-color: rgba(110, 90, 69, 0.35);
+  text-decoration-color: rgba(181, 172, 148, 0.4);
   text-underline-offset: 2px;
 }
 

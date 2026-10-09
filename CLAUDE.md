@@ -63,8 +63,10 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 - `--hand` (YasiHand), in `--gall` ink (never blue), is used for controls and the "seen" sticky notes on wall labels. The
   tally ("13/37") is set in `--display`, centred under the intro. Map counts are
   set in `--body` so they sit on the city name's baseline.
-- Palette: `--limewash` wall, `--paper` objects, `--gall` ink, `--umber` secondary,
-  `--ultramarine` for water-lining and focus rings only. `--lead-tin` is reserved for "seen".
+- Palette: `--damask` wall (dark green silk), `--paper` objects, `--gall` ink on paper,
+  `--umber` secondary on paper. Text written straight on the wall uses `--wall-ink` /
+  `--wall-ink-2`, with `--wall-rule` for rules. `--ultramarine` is for water-lining and focus rings
+  only, and `--ultramarine-pale` is for focus rings that sit on the wall. `--lead-tin` is reserved for "seen".
 - No highlighter bars, no all-caps labels.
 - Light comes from the upper left, so every cast shadow falls down and to the right
   (`--cast`). Keep new shadows consistent with that.
