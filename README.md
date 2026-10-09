@@ -1,6 +1,7 @@
-# Where to see a Vermeer
+# Seeking Vermeer
 
-A world map of every city where you can stand in front of a painting by Johannes Vermeer.
+There are only 37 known Vermeers. This is a sketched world map of every city where they hang,
+and a record of my seeing each one.
 Choose a city and its paintings rise out of the map into frames, each with a wall label:
 title, date, collection, city and canvas size. Frames are drawn to one shared scale, so
 *The Lacemaker* (24 cm) really is small next to *The Art of Painting* (120 cm).
@@ -22,7 +23,7 @@ Then open <http://localhost:8000>. Don't open `index.html` with `file://`: the p
 index.html            page, inline styles, and the baked SVG world map
 css/style.css         shared fonts, tokens, layout and footer
 js/map.js             pearls, clustering, pan/zoom by viewBox, city list
-js/frames.js          the room overlay: frames, wall labels, rise/return animation
+js/frames.js          the room overlay: SVG frames, wall labels, rise/return animation
 data/paintings.json   generated from scripts/paintings_src.py — don't edit by hand
 images/               one JPEG per painting, from Wikimedia Commons (public domain)
 scripts/              one-time Python (stdlib only) helpers, see below
@@ -34,7 +35,7 @@ scripts/              one-time Python (stdlib only) helpers, see below
 | --- | --- |
 | `scripts/paintings_src.py` | Source of truth for the paintings. Writes `data/paintings.json`. |
 | `scripts/fetch_images.py` | Downloads any missing `images/<id>.jpg` from Commons, 1000px long edge. Uses macOS `sips`. |
-| `scripts/build_map.py` | Projects Natural Earth land (Natural Earth I projection), simplifies it, and writes the `<svg>` into `index.html` between `<!-- map:start -->` and `<!-- map:end -->`. |
+| `scripts/build_map.py` | Projects Natural Earth land (Natural Earth I projection), simplifies it, gives the coastline a hand-drawn wobble, adds a compass rose, and writes the `<svg>` into `index.html` between `<!-- map:start -->` and `<!-- map:end -->`. |
 | `scripts/wikidata_query.py` | Lists Vermeer paintings on Wikidata (collection, image, size), for checking the data. |
 
 `build_map.py` needs the land file, which isn't committed:
@@ -50,6 +51,11 @@ curl -L -o scripts/ne_50m_land.geojson \
    Commons file name and height × width in cm. Take the date from the museum's own page.
 2. `python3 scripts/paintings_src.py && python3 scripts/fetch_images.py`
 
+## Marking a painting as seen
+
+Add its id to `SEEN` in `scripts/paintings_src.py` with the year (or `True`), then
+`python3 scripts/paintings_src.py`.
+
 ## Credits
 
-Painting images: Wikimedia Commons, public domain. Coastlines: Natural Earth, public domain.
+Painting images: Wikimedia Commons, public domain. Coastlines: Natural Earth, public domain. Type: IM Fell, digitised by Igino Marini (OFL).

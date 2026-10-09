@@ -1,4 +1,4 @@
-// World map: pearl markers, clustering, pan and zoom by viewBox. No library.
+// World map: town-sign marks, clustering, pan and zoom by viewBox. No library.
 // The coastline is baked into index.html by scripts/build_map.py; the projection
 // constants on the <svg> (data-k/tx/ty) let us place markers on that same projection.
 (function () {
@@ -17,8 +17,6 @@
   // Which side a city's name sits on, so neighbours don't write over each other.
   var LABEL_SIDE = { 'The Hague': 'left', 'Dublin': 'left', 'London': 'left', 'Frankfurt': 'left',
     'New York': 'left', 'Washington, D.C.': 'left', 'Braunschweig': 'below' };
-  var NUMBERS = ['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
-    'eleven', 'twelve', 'thirteen', 'fourteen', 'fifteen', 'sixteen', 'seventeen', 'eighteen', 'nineteen', 'twenty'];
 
   function project(lon, lat) {
     var l = lon * Math.PI / 180, p = lat * Math.PI / 180;
@@ -166,26 +164,62 @@
   function mean(arr, k) { return arr.reduce(function (s, c) { return s + c[k]; }, 0) / arr.length; }
   function count(members) { return members.reduce(function (s, c) { return s + c.works.length; }, 0); }
   function paintings(n) { return n + (n === 1 ? ' painting' : ' paintings'); }
+  // A tiny seeded random, so each city's mark is drawn the same way on every visit.
+  function rng(str) {
+    var h = 2166136261;
+    for (var i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
+    return function () { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
+  }
+  function n2(v) { return v.toFixed(2); }
+
+  // A circle drawn by hand: the radius drifts a little around the ring, and the pen
+  // runs slightly past where it started.
+  function penCircle(r, rad, over) {
+    var a0 = r() * Math.PI * 2, p1 = r() * 6, p2 = r() * 6, d = '', n = 28;
+    for (var k = 0; k <= n; k++) {
+      var t = k / n, ang = a0 + t * Math.PI * 2 * (1 + over);
+      var rr = rad * (1 + 0.035 * Math.sin(t * 6.28 * 2 + p1) + 0.025 * Math.sin(t * 6.28 * 3 + p2));
+      d += (k ? 'L' : 'M') + n2(Math.cos(ang) * rr) + ',' + n2(Math.sin(ang) * rr);
+    }
+    return d;
+  }
+
+  // The town sign of a 17th-century map: a small ring with a dot at its centre. A cluster
+  // is drawn as a double ring. The paper fill knocks the coastline out from behind it.
+  function markSVG(key, n) {
+    var r = rng(key), one = n === 1;
+    var ring = penCircle(r, one ? 5.6 : 5.2, 0);
+    var outer = one ? '' : '<path class="ink" stroke-width="1.1" d="' + penCircle(r, 8.4, 0.06) + '"/>';
+    return '<svg viewBox="-10 -10 20 20" aria-hidden="true">' +
+      outer +
+      '<path class="sign" stroke-width="' + (one ? 1.7 : 1.2) + '" d="' + ring + 'Z"/>' +
+      '<circle class="dot" cx="' + n2((r() - 0.5) * 0.5) + '" cy="' + n2((r() - 0.5) * 0.5) + '" r="' + (one ? 1.9 : 1.6) + '"/></svg>';
+  }
+
+  function allSeen(members) {
+    return members.every(function (c) { return c.works.every(function (w) { return w.seen; }); });
+  }
 
   function buildMarker(g) {
     var b = document.createElement('button');
     b.type = 'button';
-    b.className = 'pearl-btn';
+    b.className = 'mark-btn';
+    if (allSeen(g.members)) b.classList.add('seen-all');
     var n = count(g.members);
     if (g.members.length === 1) {
       var c = g.members[0];
       b.dataset.side = LABEL_SIDE[c.name] || 'right';
-      b.innerHTML = '<span class="pearl"></span><span class="pearl-text"><span class="pearl-name"></span><span class="pearl-count"></span></span>';
-      b.querySelector('.pearl-name').textContent = c.name;
-      b.querySelector('.pearl-count').textContent = n;
+      b.innerHTML = '<span class="mark">' + markSVG(c.name, 1) + '</span><span class="mark-text"><span class="mark-name"></span><span class="mark-count"></span></span>';
+      b.querySelector('.mark-name').textContent = c.name;
+      b.querySelector('.mark-count').textContent = n;
       b.setAttribute('aria-label', c.name + ', ' + paintings(n));
       b.setAttribute('aria-haspopup', 'dialog');
       b.setAttribute('aria-expanded', 'false');
     } else {
       b.classList.add('cluster');
       b.dataset.side = 'right';
-      b.innerHTML = '<span class="pearl"></span><span class="pearl-text"><span class="pearl-count"></span></span>';
-      b.querySelector('.pearl-count').textContent = n;
+      b.innerHTML = '<span class="mark">' + markSVG(g.key, g.members.length) + '</span><span class="mark-text"><span class="mark-count"></span></span>';
+      b.querySelector('.mark-count').textContent = n;
       b.setAttribute('aria-label', g.members.length + ' cities, ' + paintings(n) + ': ' +
         g.members.map(function (c) { return c.name; }).join(', ') + '. Zoom in');
     }
@@ -220,7 +254,7 @@
     var x0 = Math.min.apply(null, xs), x1 = Math.max.apply(null, xs);
     var y0 = Math.min.apply(null, ys), y1 = Math.max.apply(null, ys);
     var a = aspect();
-    // Zoom only as far as it takes for the closest two pearls to sit well apart,
+    // Zoom only as far as it takes for the closest two marks to sit well apart,
     // but always far enough out to keep every member (and its name) in view.
     var closest = Infinity;
     g.members.forEach(function (m, i) {
@@ -353,25 +387,55 @@
   /* ---------- city list ---------- */
   function sortKey(name) { return name.replace(/^The /, ''); }
 
+  // Cities grouped by continent, the continent with the most paintings first.
   function buildList() {
-    cities.slice().sort(function (a, b) { return sortKey(a.name).localeCompare(sortKey(b.name)); })
-      .forEach(function (c) {
-        var li = document.createElement('li');
-        var b = document.createElement('button');
-        b.type = 'button'; b.className = 'city-link';
-        b.setAttribute('aria-haspopup', 'dialog');
-        b.innerHTML = '<span class="c"></span><span class="n"></span>';
-        b.querySelector('.c').textContent = c.name;
-        b.querySelector('.n').textContent = paintings(c.works.length);
-        b.addEventListener('click', function () { openCities([c.name], b); });
-        li.appendChild(b); list.appendChild(li);
-      });
+    var byContinent = {};
+    cities.forEach(function (c) {
+      var k = c.works[0].continent;
+      (byContinent[k] = byContinent[k] || []).push(c);
+    });
+    Object.keys(byContinent).sort(function (a, b) {
+      return count(byContinent[b]) - count(byContinent[a]) || a.localeCompare(b);
+    }).forEach(function (k) {
+      var section = document.createElement('section');
+      section.className = 'continent';
+      var h = document.createElement('h3');
+      h.textContent = k;
+      var ul = document.createElement('ul');
+      ul.className = 'city-list';
+      section.appendChild(h); section.appendChild(ul);
+      byContinent[k].sort(function (a, b) { return sortKey(a.name).localeCompare(sortKey(b.name)); })
+        .forEach(function (c) { ul.appendChild(cityItem(c)); });
+      list.appendChild(section);
+    });
+  }
+
+  function cityItem(c) {
+    var li = document.createElement('li');
+    var b = document.createElement('button');
+    b.type = 'button'; b.className = 'city-link';
+    b.setAttribute('aria-haspopup', 'dialog');
+    b.innerHTML = '<span class="c"></span><span class="n"><span class="ticks" aria-hidden="true"></span><span class="nt"></span></span>';
+    b.querySelector('.c').textContent = c.name;
+    b.querySelector('.nt').textContent = paintings(c.works.length);
+    var ticks = b.querySelector('.ticks');
+    // Seen paintings first, so the row fills up from the left.
+    c.works.slice().sort(function (x, y) { return !!y.seen - !!x.seen; }).forEach(function (w) {
+      var t = document.createElement('span');
+      t.className = 'tick' + (w.seen ? ' seen' : '');
+      ticks.appendChild(t);
+    });
+    var seen = c.works.filter(function (w) { return w.seen; }).length;
+    if (seen) b.setAttribute('aria-label', c.name + ', ' + paintings(c.works.length) + ', ' + seen + ' seen');
+    b.addEventListener('click', function () { openCities([c.name], b); });
+    li.appendChild(b);
+    return li;
   }
 
   /* ---------- public ---------- */
   window.VermeerMap = {
     cities: byName,
-    // The marker currently standing for this city (its own pearl or its cluster), if any.
+    // The marker currently standing for this city (its own mark or its cluster), if any.
     markerFor: function (name) {
       var g = groups.find(function (x) { return x.members.some(function (c) { return c.name === name; }); });
       return g ? g.el : null;
@@ -396,8 +460,11 @@
         }
         c.works.push(w);
       });
-      var n = cities.length;
-      document.getElementById('nCities').textContent = NUMBERS[n] || n;
+      var seen = works.filter(function (w) { return w.seen; }).length;
+      document.getElementById('tally').textContent =
+        seen === 0 ? 'all ' + works.length + ' still to see' :
+        seen === works.length ? 'all ' + works.length + ' seen' :
+        seen + ' of ' + works.length + ' seen';
       home = computeHome();
       applyVB(home);
       recluster();

@@ -6,104 +6,83 @@
        url('../assets/fonts/YasiHand-Regular.ttf') format('truetype');
   font-weight: normal; font-style: normal; font-display: swap;
 }
+/* The Fell types: Dutch-cut faces bought for Oxford in the 1670s, in Vermeer's own decade. */
 @font-face {
-  font-family: 'Libre Caslon Display';
-  src: url('../assets/fonts/libre-caslon-display-400.woff2') format('woff2');
+  font-family: 'IM Fell Double Pica';
+  src: url('../assets/fonts/im-fell-double-pica.woff2') format('woff2');
   font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
-  font-family: 'Newsreader';
-  src: url('../assets/fonts/newsreader.woff2') format('woff2');
-  font-weight: 300 400; font-style: normal; font-display: swap;
+  font-family: 'IM Fell DW Pica';
+  src: url('../assets/fonts/im-fell-dw-pica.woff2') format('woff2');
+  font-weight: 400; font-style: normal; font-display: swap;
 }
 @font-face {
-  font-family: 'Newsreader';
-  src: url('../assets/fonts/newsreader-italic.woff2') format('woff2');
-  font-weight: 300 400; font-style: italic; font-display: swap;
+  font-family: 'IM Fell DW Pica';
+  src: url('../assets/fonts/im-fell-dw-pica-italic.woff2') format('woff2');
+  font-weight: 400; font-style: italic; font-display: swap;
 }
 
 /* ============ VARIABLES ============ */
 :root {
-  --page: #EFEFEF;
-  --ink: #1a1a1a;
-  --ink2: #3a3a3a;
-  --ink3: #5e5e5e;
-  --ink4: #8a8a8a;
-  --highlight: rgba(147, 197, 222, 0.45);
-  --highlight-strong: rgba(147, 197, 222, 0.7);
-  --link: #3a4f6a;
-  --link-soft: rgba(58, 79, 106, 0.3);
+  --limewash: #D9D6CC;   /* the wall: cool lime-wash, as behind The Milkmaid */
+  --paper: #E7DEC8;      /* objects on the wall: the map sheet, wall labels */
+  --gall: #35281E;       /* iron-gall ink */
+  --umber: #6E5A45;      /* secondary text */
+  --ultramarine: #24418C;
+  --lead-tin: #DDB94A;   /* reserved for "seen" */
+  --gall-soft: rgba(53, 40, 30, 0.18);
+  --wash: rgba(53, 40, 30, 0.1);
   --hand: 'YasiHand', cursive;
-  --serif: 'Libre Caslon Display', Georgia, serif;
-  --body: 'Newsreader', Georgia, serif;
+  --display: 'IM Fell Double Pica', Georgia, serif;
+  --body: 'IM Fell DW Pica', Georgia, serif;
 }
 
 /* ============ RESET & BASE ============ */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { font-size: 17px; -webkit-font-smoothing: antialiased; }
 body {
-  font-family: var(--body); color: var(--ink);
-  background: var(--page); min-height: 100vh; overflow-x: hidden;
+  font-family: var(--body); color: var(--gall);
+  background: var(--limewash); min-height: 100vh; overflow-x: hidden;
+  font-variant-numeric: oldstyle-nums;
 }
-::selection { background: var(--highlight-strong); }
+::selection { background: rgba(221, 185, 74, 0.55); }
 
 /* ============ CONTENT PAGE LAYOUT ============ */
 .content-body {
-  max-width: 640px; margin: 0 auto; padding: 4rem 2rem 6rem;
+  max-width: 640px; margin: 0 auto; padding: 4.5rem 2rem 6rem;
 }
-.content-body h1 {
-  font-family: var(--serif); font-size: 2.6rem;
-  font-weight: 400; margin-bottom: 1.5rem; line-height: 1.15;
-  position: relative; display: inline-block;
-}
-.content-body h1::after {
-  content: ''; position: absolute;
-  left: -3px; right: -3px; bottom: 3px;
-  height: 7px; background: var(--highlight); z-index: -1;
-  border-radius: 2px 1px 3px 1px;
-}
-.content-body h2 {
-  font-family: var(--serif); font-size: 1.4rem;
-  font-weight: 400; color: var(--ink);
-  margin: 2.5rem 0 1rem; position: relative; display: inline-block;
-}
-.content-body h2::after {
-  content: ''; position: absolute;
-  left: -2px; right: -2px; bottom: 2px;
-  height: 5px; background: var(--highlight); z-index: -1;
-}
+.content-body h1, .content-body h2 { font-family: var(--display); font-weight: 400; color: var(--gall); }
+.content-body h2 { font-size: 1.6rem; margin: 2.8rem 0 1rem; line-height: 1.2; }
 .content-body p {
-  font-size: 1.03rem; line-height: 1.78;
-  color: var(--ink2); margin-bottom: 1rem;
+  font-size: 1.1rem; line-height: 1.8;
+  color: var(--gall); margin-bottom: 1rem;
 }
 .content-body a {
-  color: var(--link); text-decoration: underline;
-  text-decoration-color: var(--link-soft);
+  color: var(--ultramarine); text-decoration: underline;
+  text-decoration-color: rgba(36, 65, 140, 0.35);
   text-underline-offset: 3px;
 }
-.content-body a:hover { text-decoration-color: var(--link); }
+.content-body a:hover { text-decoration-color: var(--ultramarine); }
 
 /* ============ SITE FOOTER ============ */
 .site-footer {
   text-align: center;
-  font-family: var(--body);
-  font-size: 0.78rem;
-  color: var(--ink3);
-  padding: 2rem 1rem;
+  font-family: var(--body); font-style: italic;
+  font-size: 0.86rem;
+  color: var(--umber);
+  padding: 2rem 1rem 2.6rem;
 }
 .site-footer a {
-  color: var(--ink3);
+  color: var(--umber);
   text-decoration: underline;
-  text-decoration-color: rgba(0,0,0,0.15);
+  text-decoration-color: rgba(110, 90, 69, 0.35);
   text-underline-offset: 2px;
 }
 
 /* ============ RESPONSIVE ============ */
-@media (max-width: 768px) {
-  
 @media (max-width: 480px) {
-  .content-body { padding: 1.5rem 1rem 3rem; }
-  .content-body h1 { font-size: 1.4rem; }
-  .content-body h2 { font-size: 1.2rem; }
-  .content-body p { font-size: 1rem; line-height: 1.7; }
+  .content-body { padding: 2.4rem 1rem 3rem; }
+  .content-body h2 { font-size: 1.35rem; }
+  .content-body p { font-size: 1.04rem; line-height: 1.72; }
 }

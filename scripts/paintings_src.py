@@ -23,6 +23,13 @@ M = {  # museum -> (city, country, lat, lon, frame)
   "National Museum of Western Art": ("Tokyo", "Japan", 35.7155, 139.7757, "gilt"),
 }
 
+CONTINENT = {
+  "Netherlands": "Europe", "Germany": "Europe", "Austria": "Europe", "France": "Europe",
+  "United Kingdom": "Europe", "Ireland": "Europe",
+  "United States": "North America",
+  "Japan": "Asia",
+}
+
 # id, title, year, museum, commons file, height cm, width cm, note
 P = [
   ("milkmaid", "The Milkmaid", "c. 1660", "Rijksmuseum", "Johannes Vermeer - Het melkmeisje - Google Art Project.jpg", 45.5, 41, None),
@@ -64,15 +71,28 @@ P = [
   ("praxedis", "Saint Praxedis", "1655", "National Museum of Western Art", "Vermeer saint praxedis.jpg", 101.6, 82.6, "Privately owned, on long-term loan. The attribution is still debated."),
 ]
 
+# Paintings I've seen in person: id -> year (or True if the year is lost). Add as you go.
+SEEN = {
+  "officer": 2026, "interrupted": 2026, "mistress-maid": 2026,   # the Frick
+  "balance": 2023, "red-hat": 2023, "flute": 2023,               # National Gallery of Art
+  "view-of-delft": 2022, "pearl-earring": 2022,                  # Mauritshuis
+  "milkmaid": 2023, "woman-reading-letter": 2023,                # Rijksmuseum
+  "leiden-virginal": 2023,                                       # the Leiden Collection
+  "guitar-player": 2024,                                         # Kenwood House
+  "art-of-painting": 2025,                                       # Kunsthistorisches Museum
+}
+
 out = []
 for pid, title, year, museum, commons, h, w, note in P:
     city, country, lat, lon, frame = M[museum]
     d = dict(id=pid, title=title, year=year, museum=museum, city=city, country=country,
+             continent=CONTINENT[country],
              lat=lat, lon=lon, heightCm=h, widthCm=w, frame=frame, commons=commons,
              image=f"images/{pid}.jpg")
     if pid == "concert": d["stolen"] = True
     if note: d["note"] = note
+    if pid in SEEN: d["seen"] = SEEN[pid]
     out.append(d)
 root = pathlib.Path(__file__).resolve().parent.parent
 (root / "data/paintings.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
-print(len(out), "paintings,", len({p['city'] for p in out}), "cities")
+print(len(out), "paintings,", len({p['city'] for p in out}), "cities,", len(SEEN), "seen")
