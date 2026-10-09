@@ -41,12 +41,10 @@
   .rule::before, .rule::after { content: ''; flex: 1; height: 0; border-top: 1px solid var(--gall); }
   .rule i { width: 7px; height: 7px; background: var(--gall); transform: rotate(45deg); }
   .title-page .intro { font-size: 1.16rem; line-height: 1.8; }
-  /* My own hand in the margin of the printed page. */
+  /* How many I've seen, set centred under the paragraph like the last line of a title block. */
   .title-page .tally {
-    font-family: var(--hand); font-size: 2.1rem; line-height: 1; color: var(--gall);
-    position: absolute; right: -9.5rem; top: 4.2rem;
-    transform: rotate(-6deg); transform-origin: left center;
-    white-space: nowrap;
+    font-family: var(--display); font-size: 1.6rem; line-height: 1; color: var(--gall);
+    margin: 0.5rem 0 0; letter-spacing: 0.04em;
   }
   .title-page .tally:empty { display: none; }
 
@@ -360,9 +358,6 @@
   }
   .postit span + span { font-size: 1.05rem; }
 
-  @media (max-width: 1400px) {
-    .title-page .tally { position: static; display: block; margin: 0.4rem 0 0 auto; width: max-content; transform: rotate(-4deg); }
-  }
   @media (max-width: 768px) {
     .title-page .h1-small { font-size: 1.25rem; }
     .title-page .h1-large { font-size: 2.9rem; }

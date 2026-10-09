@@ -56,7 +56,8 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 - `--display` (IM Fell Double Pica) is used for h1/h2 and room titles only, at weight 400.
 - `--body` (IM Fell DW Pica) is used for everything else. Meta text is italic. Fell figures are
   old-style.
-- `--hand` (YasiHand), in `--gall` ink (never blue), is used for controls, the tally and the "seen" sticky notes on wall labels. Map counts are
+- `--hand` (YasiHand), in `--gall` ink (never blue), is used for controls and the "seen" sticky notes on wall labels. The
+  tally ("13/37") is set in `--display`, centred under the intro. Map counts are
   set in `--body` so they sit on the city name's baseline.
 - Palette: `--limewash` wall, `--paper` objects, `--gall` ink, `--umber` secondary,
   `--ultramarine` for water-lining and focus rings only. `--lead-tin` is reserved for "seen".
