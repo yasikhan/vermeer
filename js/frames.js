@@ -41,6 +41,53 @@
     return function () { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296; };
   }
 
+  // A thin wax seal in lead-tin: a narrow raised rim around a sunken field, with the year I saw
+  // the painting cut into it in Roman numerals. Only the spread of the wax and the angle vary.
+  function roman(n) {
+    var out = '', v = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1],
+      sym = ['M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I'];
+    for (var i = 0; i < v.length; i++) while (n >= v[i]) { out += sym[i]; n -= v[i]; }
+    return out;
+  }
+
+  function sealSVG(w) {
+    var r = rng('seal:' + w.id), id = 'seal-' + w.id;
+    var p1 = r() * 6.3, p2 = r() * 6.3;
+    var pts = [], N = 36;
+    for (var i = 0; i < N; i++) {
+      var a = i / N * Math.PI * 2;
+      var rad = 44 * (1 + 0.03 * Math.sin(2 * a + p1) + 0.022 * Math.sin(3 * a + p2));
+      pts.push([rad * Math.cos(a), rad * Math.sin(a)]);
+    }
+    // Closed Catmull-Rom through the points, as cubic Béziers.
+    var f = function (n) { return n.toFixed(1); };
+    var path = 'M' + f(pts[0][0]) + ' ' + f(pts[0][1]);
+    for (var j = 0; j < N; j++) {
+      var p0 = pts[(j + N - 1) % N], q1 = pts[j], q2 = pts[(j + 1) % N], q3 = pts[(j + 2) % N];
+      path += 'C' + f(q1[0] + (q2[0] - p0[0]) / 6) + ' ' + f(q1[1] + (q2[1] - p0[1]) / 6) + ' ' +
+        f(q2[0] - (q3[0] - q1[0]) / 6) + ' ' + f(q2[1] - (q3[1] - q1[1]) / 6) + ' ' + f(q2[0]) + ' ' + f(q2[1]);
+    }
+    path += 'Z';
+    var word = w.seen === true ? 'seen' : roman(w.seen);
+    // Cut in by the die, so each letter's lower-right edge catches the light.
+    var year = '<text class="seal-hi" x="0.5" y="5.4" font-size="13">' + word + '</text>' +
+      '<text class="seal-lo" x="0" y="4.9" font-size="13">' + word + '</text>';
+    return '<svg viewBox="-50 -50 100 100" aria-hidden="true"><defs>' +
+      '<linearGradient id="' + id + '-mound" x1="0.15" y1="0.1" x2="0.85" y2="0.95">' +
+        '<stop offset="0" stop-color="#FFF4D2" stop-opacity="0.4"/><stop offset="0.45" stop-color="#FFF4D2" stop-opacity="0"/>' +
+        '<stop offset="0.6" stop-color="#4A3200" stop-opacity="0"/><stop offset="1" stop-color="#4A3200" stop-opacity="0.22"/></linearGradient>' +
+      '<linearGradient id="' + id + '-wall" x1="0.15" y1="0.1" x2="0.85" y2="0.95">' +
+        '<stop offset="0" stop-color="#4A3200" stop-opacity="0.4"/><stop offset="0.5" stop-color="#4A3200" stop-opacity="0"/>' +
+        '<stop offset="1" stop-color="#FFF4D2" stop-opacity="0.6"/></linearGradient>' +
+      '<filter id="' + id + '-soft" x="-10%" y="-10%" width="120%" height="120%"><feGaussianBlur stdDeviation="0.7"/></filter>' +
+      '</defs>' +
+      '<path class="seal-wax" d="' + path + '"/>' +
+      '<path d="' + path + '" fill="url(#' + id + '-mound)"/>' +
+      '<circle class="seal-field" r="37"/>' +
+      '<circle r="37" fill="none" stroke="url(#' + id + '-wall)" stroke-width="1.8" filter="url(#' + id + '-soft)"/>' +
+      year + '</svg>';
+  }
+
   // A moulding is a stack of bands from the outer edge (0) in to the sight edge (1), each
   // filled with a material: a gradient, a ripple pattern, gold, or wood grain. Every kind of
   // frame below is just a different stack, matched to how that painting is framed today.
@@ -391,14 +438,14 @@
     label.appendChild(el('div', 'd', cm(w.heightCm) + ' × ' + cm(w.widthCm) + ' cm'));
     if (w.note) label.appendChild(el('div', 'note', w.note));
     if (w.seen) {
-      // A sticky note on the label's edge, in my own hand.
+      // A wax seal pressed into the label's corner, with the year I saw it.
       label.classList.add('has-seen');
-      var note = el('div', 'postit');
-      // Stuck on by hand, so each sits at its own slight angle (fixed per painting).
-      note.style.setProperty('--tilt', (rng(w.id)() * 8 - 2.5).toFixed(1) + 'deg');
-      note.appendChild(el('span', null, 'seen'));
-      if (w.seen !== true) note.appendChild(el('span', null, String(w.seen)));
-      label.appendChild(note);
+      var seal = el('div', 'seal');
+      seal.setAttribute('role', 'img');
+      seal.setAttribute('aria-label', w.seen === true ? 'Seen' : 'Seen in ' + w.seen);
+      seal.style.setProperty('--tilt', (rng(w.id)() * 24 - 12).toFixed(1) + 'deg');
+      seal.innerHTML = sealSVG(w);
+      label.appendChild(seal);
     }
     work.appendChild(label);
     work._frameH = h + 2 * t;

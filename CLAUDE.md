@@ -16,7 +16,9 @@ GitHub Pages serves `main` as-is (`.nojekyll` is present). Pushing to `main` pub
   with no image, and `fetch_images.py` skips it.
 - `SEEN` in `paintings_src.py` (id → year, or `True`) marks paintings seen in person. It drives
   the headline tally, the city-list circles (filled once seen), the lead-tin fill in a finished city's mark and
-  the yellow "seen [year]" sticky note on wall labels.
+  the lead-tin wax seal pressed into the corner of a wall label: a thin raised rim around a
+  sunken field with the year cut in Roman numerals (`sealSVG()` / `roman()` in `js/frames.js`).
+  Only the wax outline and angle vary, seeded by the painting's id.
 - Images live at `images/<id>.jpg`. Use JPEG only, with a 1000px long edge, at sips `formatOptions normal`
   (about quality 80). A bare number is ignored by sips.
 
@@ -57,10 +59,10 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 ## Design rules
 
 - Concept: a 17th-century printed title page, annotated in my own hand.
-- `--display` (IM Fell Double Pica) is used for h1/h2 and room titles only, at weight 400.
+- `--display` (IM Fell Double Pica) is used for h1/h2, room titles and the year stamped on seals, at weight 400.
 - `--body` (IM Fell DW Pica) is used for everything else. Meta text is italic. Fell figures are
   old-style.
-- `--hand` (YasiHand), in `--gall` ink (never blue), is used for controls and the "seen" sticky notes on wall labels. The
+- `--hand` (YasiHand), in `--gall` ink (never blue), is used for controls. The
   tally ("13/37") is set in `--display`, centred under the intro. Map counts are
   set in `--body` so they sit on the city name's baseline.
 - Palette: the wall is cool whitewashed plaster (`--plaster`, lit by `--daylight`, a strong
