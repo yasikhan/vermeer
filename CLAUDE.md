@@ -14,11 +14,11 @@ GitHub Pages serves `main` as-is (`.nojekyll` is present). Pushing to `main` pub
 - `frame` is per painting (`FRAME` in `paintings_src.py`), matched to how it's framed today from
   the photos at essentialvermeer.com/framed. The kinds are listed in `KINDS` in `js/frames.js`. `stolen: true` (The Concert) renders an empty frame
   with no image, and `fetch_images.py` skips it.
-- `continent` comes from `CONTINENT` (by country) in `paintings_src.py`; the city list groups by it.
 - `SEEN` in `paintings_src.py` (id → year, or `True`) marks paintings seen in person. It drives
   the headline tally, the city-list circles (filled once seen), the lead-tin fill in a finished city's mark and
   the yellow "seen [year]" sticky note on wall labels.
-- Images live at `images/<id>.jpg`. Use JPEG only, with a 1000px long edge.
+- Images live at `images/<id>.jpg`. Use JPEG only, with a 1000px long edge, at sips `formatOptions normal`
+  (about quality 80). A bare number is ignored by sips.
 
 ## Map
 
@@ -31,6 +31,10 @@ GitHub Pages serves `main` as-is (`.nojekyll` is present). Pushing to `main` pub
   coastline along its normal with smooth noise, and draws larger landmasses twice (`#land`,
   `.coast2`). The compass rose and rhumb lines are baked too. Paper grain and foxing are a
   static overlay on `.map-viewport`, so they don't scale with zoom.
+- Performance (Safari): `markMoving()` puts `.moving` on the viewport during any zoom, drag, pinch or
+  wheel, and CSS hides the decorative layers (outer water-lines, hatch, wash, coast2, rhumbs,
+  graticule, paper grain) until 160ms after it stops. WebKit can't redraw the full drawing at
+  frame rate; with this it holds ~50–57fps. Keep any new decorative map layer in that list.
 - Stroke widths are `calc(Npx * var(--u))`, where `--u` is set by `applyVB()`.
   `vector-effect: non-scaling-stroke` is ignored on `<use>` in Chrome, so don't switch back to it.
 - Cities use the period town sign: a hand-drawn ring with a centre dot (`markSVG()`, seeded by

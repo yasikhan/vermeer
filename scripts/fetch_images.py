@@ -36,13 +36,14 @@ for p in json.loads((ROOT / "data/paintings.json").read_text()):
     if data[:4] == b"\x89PNG":
         # PNG sources come back as PNG thumbs; re-encode to JPEG with macOS sips.
         tmp = dest.with_suffix(".png"); tmp.write_bytes(data)
-        subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "85", str(tmp), "--out", str(dest)],
+        subprocess.run(["sips", "-s", "format", "jpeg", "-s", "formatOptions", "normal", str(tmp), "--out", str(dest)],
                        check=True, capture_output=True)
         tmp.unlink(); data = dest.read_bytes()
     else:
         dest.write_bytes(data)
     # Frames never render taller than ~500 CSS px, so cap the long edge at 1000px for retina.
-    subprocess.run(["sips", "-Z", "1000", "-s", "formatOptions", "82", str(dest)], check=True, capture_output=True)
+    # sips ignores a bare number for JPEG quality; "normal" is roughly quality 80.
+    subprocess.run(["sips", "-Z", "1000", "-s", "formatOptions", "normal", str(dest)], check=True, capture_output=True)
     data = dest.read_bytes()
     print(f"{p['id']:22} {len(data)//1024:5d} KB  {url.rsplit('/',1)[-1][:60]}")
     time.sleep(3)

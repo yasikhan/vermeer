@@ -18,7 +18,8 @@ MIN_AREA = 0.5                # viewBox units²; roughly islands smaller than Ma
 TOL = 0.06                    # Douglas–Peucker tolerance in viewBox units (map zooms ~14x)
 WOBBLE = 0.22                 # pen wobble amplitude in viewBox units
 WAVE = 6.0                    # pen wobble wavelength in viewBox units
-SECOND_PASS_AREA = 4          # only rings at least this big get the second pen line
+SECOND_PASS_AREA = 30         # only rings at least this big get the second pen line
+SECOND_PASS_TOL = 0.18        # and it's drawn from coarser geometry: it's a faint echo, not the coast
 
 def raw(lon, lat):
     l, p = math.radians(lon), math.radians(lat)
@@ -100,7 +101,7 @@ def ring_d(coords, seed):
     area = abs(sum(x0 * y1 - x1 * y0 for (x0, y0), (x1, y1) in zip(pts, pts[1:] + pts[:1]))) / 2
     if area < MIN_AREA: return "", ""
     first = fmt(wobble(pts, seed))
-    second = fmt(wobble(pts, seed + 7919)) if area >= SECOND_PASS_AREA else ""
+    second = fmt(wobble(dp(pts, SECOND_PASS_TOL), seed + 7919)) if area >= SECOND_PASS_AREA else ""
     return first, second
 
 def num(v):

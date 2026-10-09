@@ -23,13 +23,6 @@ M = {  # museum -> (city, country, lat, lon)
   "National Museum of Western Art": ("Tokyo", "Japan", 35.7155, 139.7757),
 }
 
-CONTINENT = {
-  "Netherlands": "Europe", "Germany": "Europe", "Austria": "Europe", "France": "Europe",
-  "United Kingdom": "Europe", "Ireland": "Europe",
-  "United States": "North America",
-  "Japan": "Asia",
-}
-
 # How each painting is framed today, matched from photographs of it on the wall
 # (essentialvermeer.com/framed). Kinds are drawn by js/frames.js:
 #   ripple / ripple-gilt / ripple-rosewood / ripple-tortoise  Dutch ripple frames
@@ -118,7 +111,6 @@ for pid, title, year, museum, commons, h, w, note in P:
     city, country, lat, lon = M[museum]
     frame = FRAME[pid]
     d = dict(id=pid, title=title, year=year, museum=museum, city=city, country=country,
-             continent=CONTINENT[country],
              lat=lat, lon=lon, heightCm=h, widthCm=w, frame=frame, commons=commons,
              image=f"images/{pid}.jpg")
     if pid == "concert": d["stolen"] = True

@@ -71,6 +71,16 @@
 
   function setVB(v) { applyVB(clampVB(v)); }
 
+  // While the map is moving, CSS drops the decorative layers (outer water-lines, hatching,
+  // wash, second pen line, rhumb lines, paper grain) so each frame redraws only the essentials.
+  // Safari in particular can't redraw the full drawing fast enough to animate it.
+  var movingTimer;
+  function markMoving() {
+    vp.classList.add('moving');
+    clearTimeout(movingTimer);
+    movingTimer = setTimeout(function () { vp.classList.remove('moving'); }, 160);
+  }
+
   function animateTo(target, done) {
     target = clampVB(target);
     if (tween) cancelAnimationFrame(tween.raf);
@@ -84,6 +94,7 @@
       var e = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
       var w = from.w * Math.pow(target.w / from.w, e);
       var k = (from.w === target.w) ? e : (w - from.w) / (target.w - from.w);
+      markMoving();
       applyVB({
         x: from.x + (target.x - from.x) * k,
         y: from.y + (target.y - from.y) * k,
@@ -196,6 +207,23 @@
       '<circle class="dot" cx="' + n2((r() - 0.5) * 0.5) + '" cy="' + n2((r() - 0.5) * 0.5) + '" r="' + (one ? 1.9 : 1.6) + '"/></svg>';
   }
 
+  // Start fetching a city's paintings as soon as someone points at it or tabs to it, so the
+  // pictures are usually there by the time they rise into their frames.
+  function preload(members) {
+    members.forEach(function (c) {
+      c.works.forEach(function (w) {
+        if (w.stolen || w._preload) return;
+        w._preload = new Image();
+        w._preload.src = w.image;
+      });
+    });
+  }
+  function preloadOn(el, members) {
+    var go = function () { preload(members); };
+    el.addEventListener('pointerenter', go);
+    el.addEventListener('focus', go);
+  }
+
   function allSeen(members) {
     return members.every(function (c) { return c.works.every(function (w) { return w.seen; }); });
   }
@@ -223,6 +251,8 @@
       b.setAttribute('aria-label', g.members.length + ' cities, ' + paintings(n) + ': ' +
         g.members.map(function (c) { return c.name; }).join(', ') + '. Zoom in');
     }
+    // Clusters zoom rather than open, so only a single city's mark fetches its paintings.
+    if (g.members.length === 1) preloadOn(b, g.members);
     b.addEventListener('click', function (e) {
       if (suppressClick) { e.preventDefault(); return; }
       var grp = groups.find(function (x) { return x.el === b; });
@@ -311,6 +341,7 @@
       var p = drag.pinch, cw = vp.clientWidth, ch = vp.clientHeight;
       var px = p.vb.x + p.mx / cw * p.vb.w, py = p.vb.y + p.my / ch * p.vb.h;
       var w = p.vb.w * p.d / Math.max(d, 1);
+      markMoving();
       setVB({ x: px - p.mx / cw * w, y: py - p.my / ch * (w / aspect()), w: w, h: w / aspect() });
       drag.moved = suppressClick = true;
       return;
@@ -324,6 +355,7 @@
       try { vp.setPointerCapture(e.pointerId); } catch (_) {}
     }
     var s = drag.startVB;
+    markMoving();
     setVB({ x: s.x - dx / vp.clientWidth * s.w, y: s.y - dy / vp.clientHeight * s.h, w: s.w, h: s.h });
   });
 
@@ -352,6 +384,7 @@
     if (!e.ctrlKey && !e.metaKey) return;
     e.preventDefault();
     var r = vp.getBoundingClientRect();
+    markMoving();
     zoomAt(Math.exp(-e.deltaY * 0.01), e.clientX - r.left, e.clientY - r.top);
     clearTimeout(wheelTimer); wheelTimer = setTimeout(recluster, 120);
   }, { passive: false });
@@ -387,24 +420,21 @@
   /* ---------- city list ---------- */
   function sortKey(name) { return name.replace(/^The /, ''); }
 
-  // Cities grouped by continent, the continent with the most paintings first.
+  // Cities grouped by country, countries in alphabetical order.
   function buildList() {
-    var byContinent = {};
+    var byCountry = {};
     cities.forEach(function (c) {
-      var k = c.works[0].continent;
-      (byContinent[k] = byContinent[k] || []).push(c);
+      (byCountry[c.country] = byCountry[c.country] || []).push(c);
     });
-    Object.keys(byContinent).sort(function (a, b) {
-      return count(byContinent[b]) - count(byContinent[a]) || a.localeCompare(b);
-    }).forEach(function (k) {
+    Object.keys(byCountry).sort().forEach(function (k) {
       var section = document.createElement('section');
-      section.className = 'continent';
+      section.className = 'country';
       var h = document.createElement('h3');
       h.textContent = k;
       var ul = document.createElement('ul');
       ul.className = 'city-list';
       section.appendChild(h); section.appendChild(ul);
-      byContinent[k].sort(function (a, b) { return sortKey(a.name).localeCompare(sortKey(b.name)); })
+      byCountry[k].sort(function (a, b) { return sortKey(a.name).localeCompare(sortKey(b.name)); })
         .forEach(function (c) { ul.appendChild(cityItem(c)); });
       list.appendChild(section);
     });
@@ -427,6 +457,7 @@
     });
     var seen = c.works.filter(function (w) { return w.seen; }).length;
     if (seen) b.setAttribute('aria-label', c.name + ', ' + paintings(c.works.length) + ', ' + seen + ' seen');
+    preloadOn(b, [c]);
     b.addEventListener('click', function () { openCities([c.name], b); });
     li.appendChild(b);
     return li;
