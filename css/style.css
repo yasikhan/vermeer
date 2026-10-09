@@ -1,4 +1,4 @@
-/* Shared base, copied from yrk-website/css/style.css and trimmed to what this site uses. */
+/* Shared base: fonts, tokens, layout and footer. */
 /* ============ FONTS (self-hosted, latin subset) ============ */
 @font-face {
   font-family: 'YasiHand';
@@ -48,30 +48,6 @@ body {
 ::selection { background: var(--highlight-strong); }
 
 /* ============ CONTENT PAGE LAYOUT ============ */
-.content-nav {
-  position: sticky; top: 0; z-index: 50;
-  background: var(--page);
-  border-bottom: 1px solid rgba(0,0,0,0.06);
-  padding: 0.9rem 2rem;
-  display: flex; align-items: baseline; justify-content: space-between;
-}
-.back-btn {
-  font-family: var(--hand); font-size: 1.15rem;
-  color: var(--ink3); background: none; border: none;
-  cursor: pointer; padding: 0.2rem 0.5rem; position: relative;
-  transition: color 0.15s; text-decoration: none;
-}
-.back-btn::before {
-  content: ''; position: absolute; inset: 0;
-  background: var(--highlight); opacity: 0; z-index: -1;
-  border-radius: 2px; transition: opacity 0.15s;
-}
-.back-btn:hover::before { opacity: 1; }
-.back-btn:hover { color: var(--ink); }
-.content-title {
-  font-family: var(--body); font-size: 1.05rem;
-  font-weight: 400; color: var(--ink);
-}
 .content-body {
   max-width: 640px; margin: 0 auto; padding: 4rem 2rem 6rem;
 }
@@ -124,14 +100,7 @@ body {
 
 /* ============ RESPONSIVE ============ */
 @media (max-width: 768px) {
-  .content-nav { padding: 0.7rem 1rem; }
-  .back-btn { font-size: 1rem; }
-  .content-title { font-size: 0.9rem; }
-  .content-body { padding: 2rem 1.2rem 4rem; }
-  .content-body h1 { font-size: 1.7rem; }
-  .content-body p { font-size: 1rem; }
-}
-
+  
 @media (max-width: 480px) {
   .content-body { padding: 1.5rem 1rem 3rem; }
   .content-body h1 { font-size: 1.4rem; }

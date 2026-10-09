@@ -5,8 +5,7 @@ Choose a city and its paintings rise out of the map into frames, each with a wal
 title, date, collection, city and canvas size. Frames are drawn to one shared scale, so
 *The Lacemaker* (24 cm) really is small next to *The Art of Painting* (120 cm).
 
-Modelled on the photography page of [yrkhan.com](https://yrkhan.com) and sharing its type
-and tokens. Static HTML, CSS and vanilla JavaScript, with no build step and no runtime dependencies.
+Static HTML, CSS and vanilla JavaScript, with no build step and no runtime dependencies.
 
 ## Running locally
 
@@ -21,7 +20,7 @@ Then open <http://localhost:8000>. Don't open `index.html` with `file://`: the p
 
 ```
 index.html            page, inline styles, and the baked SVG world map
-css/style.css         shared tokens/nav/footer, trimmed from yrk-website
+css/style.css         shared fonts, tokens, layout and footer
 js/map.js             pearls, clustering, pan/zoom by viewBox, city list
 js/frames.js          the room overlay: frames, wall labels, rise/return animation
 data/paintings.json   generated from scripts/paintings_src.py — don't edit by hand
