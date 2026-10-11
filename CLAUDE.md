@@ -58,20 +58,21 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 
 ## Design rules
 
-- Concept: a 17th-century printed title page, annotated in my own hand.
+- Concept: a 17th-century printed title page, annotated in my own hand. The window and its light are
+  the one flourish; the title block is just the h1 and the intro, with no kicker or ornament rule.
 - `--display` (IM Fell Double Pica) is used for h1/h2, room titles and the year stamped on seals, at weight 400.
 - `--body` (IM Fell DW Pica) is used for everything else. Meta text is italic. Fell figures are
   old-style.
 - `--hand` (YasiHand), in `--gall` ink (never blue), is used for controls and for the
   tally, a margin note ("so far, 13/37!") set in the right margin beside a `]` bracket
   spanning the first intro paragraph (`.margin-note`); at 1100px and below it drops to its own
-  centred line with no bracket. Map counts are
+  line with no bracket. The h1 is centred; the intro paragraphs are set flush left. Map counts are
   set in `--body` so they sit on the city name's baseline.
 - Palette: the wall is cool whitewashed plaster (`--plaster`, lit by `--daylight`, a strong
   falloff from the upper left, fixed to the screen). Objects on it are warm `--paper`, so they separate
   by temperature, not just value. `--gall` is ink on paper and `--umber` is secondary on paper. Text written straight on the wall uses
   bone-black `--wall-ink` / `--wall-ink-2`, with `--wall-rule` for rules. `--lead-tin` is
-  the one accent: "seen", the rule's lozenge, links and focus rings. Don't add another
+  the one accent: "seen", links and focus rings. Don't add another
   yellow, another beige, or a blue.
 - No highlighter bars, no all-caps labels.
 - Light comes from the upper left, so every cast shadow falls down and to the right
@@ -85,11 +86,15 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
   for an even, directionless shadow. `--daylight` is a hard falloff plus a soft shaft (a conic wedge
   from the corner). The choice is saved in `localStorage` (`vermeer-light`) and restored before first paint
   by an inline script in `<head>`. Anything new that depends on light needs an off state.
+- Motion only answers an action (the shutters, the room). Hover never moves anything; city
+  names underline instead.
 - Animation: the rise and return use the Web Animations API with staggered delays.
   `prefers-reduced-motion` gets plain fades. Hidden tabs skip animation entirely, because rAF
   and WAAPI don't tick there.
 
 ## The room
 
+- Any `<a data-city="…">` in the intro opens that city's room (click handler in `js/map.js`).
+  These links are set in ink with a lead-tin underline so the paragraph stays legible.
 - "close" is `position: fixed` outside `.room-inner`, so it stays reachable however far the wall
   scrolls. Any click on bare wall (not a frame, label or heading) also closes the room, as does Esc.

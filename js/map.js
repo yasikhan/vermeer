@@ -463,6 +463,14 @@
     return li;
   }
 
+  // Phrases in the intro that name a painting open the room for the city it hangs in.
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[data-city]');
+    if (!a) return;
+    e.preventDefault();
+    if (byName[a.dataset.city]) openCities([a.dataset.city], a);
+  });
+
   /* ---------- public ---------- */
   window.VermeerMap = {
     cities: byName,

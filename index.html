@@ -39,18 +39,8 @@
 
   /* ============ TITLE PAGE ============ */
   .title-page { text-align: center; margin: 0 auto; max-width: 36em; position: relative; }
-  .title-page h1 { line-height: 1.05; margin-bottom: 1.4rem; }
-  .title-page h1 span { display: block; }
-  .title-page .h1-small { font-size: 1.55rem; margin-bottom: 0.35rem; color: var(--wall-ink-2); }
-  .title-page .h1-large { font-size: 4rem; letter-spacing: 0.005em; }
-  /* A printer's rule with a lozenge, the sort that closed a title block. */
-  .rule {
-    display: flex; align-items: center; justify-content: center; gap: 0.7rem;
-    margin: 0 auto 1.8rem; width: 11rem;
-  }
-  .rule::before, .rule::after { content: ''; flex: 1; height: 0; border-top: 1px solid var(--wall-ink); }
-  .rule i { width: 7px; height: 7px; background: var(--lead-tin); transform: rotate(45deg); }
-  .title-page .intro { font-size: 1.16rem; line-height: 1.8; text-wrap: pretty; }
+  .title-page h1 { font-size: 4rem; letter-spacing: 0.005em; line-height: 1.05; margin-bottom: 2rem; }
+  .title-page .intro { font-size: 1.16rem; line-height: 1.8; text-wrap: pretty; text-align: left; }
   /* How many I've seen, pencilled in the margin: a ] bracket down the right of the first paragraph,
      with the note beside it. It hangs outside the column so it doesn't move the text. */
   .intro.noted { position: relative; }
@@ -63,6 +53,11 @@
   .margin-note path { fill: none; stroke: currentColor; stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linecap: round; stroke-linejoin: round; }
   .margin-note #tally { display: inline-block; transform: rotate(-2deg); }
   .margin-note:has(#tally:empty) { display: none; }
+  /* Phrases that open the room where that painting hangs. Ink, with the accent in the underline,
+     so a long paragraph stays legible. */
+  .intro a[data-city] { color: inherit; text-decoration-color: var(--lead-tin); text-decoration-thickness: 1px; }
+  .intro a[data-city]:hover { text-decoration-thickness: 2px; }
+  .intro a[data-city]:focus-visible { outline: 2px solid var(--lead-tin); outline-offset: 2px; }
 
   /* ============ THE MAP SHEET ============ */
   .wall-map {
@@ -165,7 +160,6 @@
   .mark svg {
     display: block; width: 100%; height: 100%; overflow: visible;
     filter: drop-shadow(1px 1.5px 0.6px rgba(53, 40, 30, 0.35));
-    transition: transform 0.15s ease-out;
   }
   .mark .sign { fill: var(--land); stroke: var(--gall); stroke-linejoin: round; }
   .mark .dot { fill: var(--gall); }
@@ -182,7 +176,7 @@
     text-shadow: 0 0 3px var(--sea), 0 0 3px var(--sea), 0 0 6px var(--sea);
   }
   .mark-btn.cluster .mark-count { font-size: 1.05rem; color: var(--gall); }
-  .mark-btn:hover .mark svg { transform: scale(1.18); }
+  .mark-btn:hover .mark-name { text-decoration: underline; text-decoration-thickness: 0.75px; text-underline-offset: 0.18em; }
   .mark-btn:focus-visible { outline: none; }
   .mark-btn:focus-visible .mark { outline: 2px solid var(--lead-tin); outline-offset: 3px; border-radius: 50%; }
   /* The open city is inked in. */
@@ -223,9 +217,8 @@
     width: 100%; padding: 0.5rem 0;
     background: none; border: none; border-bottom: 0.75px solid var(--wall-rule);
     font-family: var(--body); font-size: 1.1rem; color: var(--wall-ink); text-align: left; cursor: pointer;
-    transition: padding-left 0.15s;
   }
-  .city-link:hover { padding-left: 0.3rem; }
+  .city-link:hover .c { text-decoration: underline; text-decoration-thickness: 0.75px; text-underline-offset: 0.18em; }
   .city-link:focus-visible { outline: 2px solid var(--lead-tin); outline-offset: 2px; }
   .city-link .n { font-style: italic; font-size: 0.92rem; color: var(--wall-ink-2); display: flex; align-items: baseline; gap: 0.55rem; }
   /* One circle per painting: filled with lead-tin once seen, an empty ink ring until then. */
@@ -424,8 +417,7 @@
 
   @media (max-width: 768px) {
     .window { top: 8px; left: 6px; width: 46px; height: 43px; }
-    .title-page .h1-small { font-size: 1.25rem; }
-    .title-page .h1-large { font-size: 2.9rem; }
+    .title-page h1 { font-size: 2.9rem; }
     .wall-map { margin-top: 2.4rem; padding: 9px; }
     .wall-map::before { inset: 4px; }
     .map-viewport { aspect-ratio: 1.6; }
@@ -440,11 +432,11 @@
   }
   /* No margin to write in: the note drops to its own line under the paragraph, without the bracket. */
   @media (max-width: 1100px) {
-    .margin-note { position: static; justify-content: center; margin: 0.4rem 0 0; }
+    .margin-note { position: static; justify-content: flex-start; margin: 0.4rem 0 0; }
     .margin-note svg { display: none; }
   }
   @media (max-width: 480px) {
-    .title-page .h1-large { font-size: 2.4rem; }
+    .title-page h1 { font-size: 2.4rem; }
     .title-page .intro { font-size: 1.06rem; }
     .room-title { font-size: 1.55rem; }
   }
@@ -480,10 +472,9 @@
 
 <main class="content-body map-page">
   <header class="title-page">
-    <h1><span class="h1-small">A life's work:</span><span class="h1-large">Seeking Vermeer</span></h1>
-    <div class="rule" aria-hidden="true"><i></i></div>
+    <h1>Seeking Vermeer</h1>
     <p class="intro noted">There are only 37 known Vermeers, of which 35 are in public collections. My life's goal is to see all of them.<span class="margin-note"><svg viewBox="0 0 10 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0.8 2.4 C3.6 1.6 6.2 2.6 8.6 1.8 C8.1 28 9.2 66 8.4 98.3 C6 97.6 3.4 98.7 0.6 97.9"/></svg><span id="tally"></span></span></p>
-    <p class="intro">Vermeer was perhaps the greatest painter of the Dutch Golden Age, known for his uncanny ability to capture the world both as it was and as he wished it would be.</p>
+    <p class="intro">I have always had a great affinity for Vermeer. I am struck by how he uses light itself as a study and explores the domestic lives of women as a legitimate subject. Despite the intimate nature of his scenes, his paintings can be wildly allegorical, exploring <a href="#" data-city="Vienna">painting itself</a>, his complicated <a href="#" data-city="New York">relationship with Catholicism</a>, or they can be far simpler: a young woman looking steadily out across time, wearing her legendary <a href="#" data-city="The Hague">pearl earring</a>. Whatever the subject, his mastery is equally arresting. To weave such fine detail into such small canvases, to imbue the viewer with a sense of life so resplendent and rich though everyone depicted is long dead, and the artist too… it is nothing short of genius.</p>
   </header>
 
   <div class="wall-map">
