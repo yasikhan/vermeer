@@ -39,7 +39,14 @@
 
   /* ============ TITLE PAGE ============ */
   .title-page { text-align: center; margin: 0 auto; max-width: 36em; position: relative; }
-  .title-page h1 { font-size: 4rem; letter-spacing: 0.005em; line-height: 1.05; margin-bottom: 2rem; }
+  .title-page h1 { font-size: 4rem; letter-spacing: 0.005em; line-height: 1.05; margin-bottom: 1.4rem; }
+  /* An epigraph under the title, set narrower and smaller than the intro, the way a title page quotes its authority. */
+  .epigraph { max-width: 27em; margin: 0 auto 2.4rem; }
+  .epigraph blockquote { font-style: italic; font-size: 1.08rem; line-height: 1.6; color: var(--wall-ink); text-wrap: pretty; }
+  .epigraph figcaption { margin-top: 0.5rem; font-size: 0.98rem; color: var(--wall-ink-2); }
+  .epigraph cite { font-style: italic; }
+  .epigraph a { color: inherit; text-decoration-color: var(--lead-tin); text-decoration-thickness: 1px; }
+  .epigraph a:hover { text-decoration-thickness: 2px; }
   .title-page .intro { font-size: 1.16rem; line-height: 1.8; text-wrap: pretty; text-align: left; }
   /* How many I've seen, pencilled in the margin: a ] bracket down the right of the first paragraph,
      with the note beside it. It hangs outside the column so it doesn't move the text. */
@@ -473,6 +480,10 @@
 <main class="content-body map-page">
   <header class="title-page">
     <h1>Seeking Vermeer</h1>
+    <figure class="epigraph">
+      <blockquote><p>In these circumstances Vermeer could see Suchness in all its heavenly beauty⁠—⁠could see and, in some small measure, render it⁠—⁠in a subtle and sumptuous still life.</p></blockquote>
+      <figcaption>Aldous Huxley, <a href="https://maps.org/images/pdf/books/HuxleyA1954TheDoorsOfPerception.pdf"><cite>The Doors of Perception</cite></a>, 1954</figcaption>
+    </figure>
     <p class="intro noted">There are only 37 known Vermeers, of which 35 are in public collections. My life's goal is to see all of them.<span class="margin-note"><svg viewBox="0 0 10 100" preserveAspectRatio="none" aria-hidden="true"><path d="M0.8 2.4 C3.6 1.6 6.2 2.6 8.6 1.8 C8.1 28 9.2 66 8.4 98.3 C6 97.6 3.4 98.7 0.6 97.9"/></svg><span id="tally"></span></span></p>
     <p class="intro">I have always had a great affinity for Vermeer. I am struck by how he uses light itself as a study and explores the domestic lives of women as a legitimate subject. Despite the intimate nature of his scenes, his paintings can be wildly allegorical, exploring <a href="#" data-city="Vienna">painting itself</a>, his complicated <a href="#" data-city="New York">relationship with Catholicism</a>, or they can be far simpler: a young woman looking steadily out across time, wearing her legendary <a href="#" data-city="The Hague">pearl earring</a>. Whatever the subject, his mastery is equally arresting. To weave such fine detail into such small canvases, to imbue the viewer with a sense of life so resplendent and rich though everyone depicted is long dead, and the artist too… it is nothing short of genius.</p>
   </header>

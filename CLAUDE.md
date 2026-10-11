@@ -59,7 +59,7 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 ## Design rules
 
 - Concept: a 17th-century printed title page, annotated in my own hand. The window and its light are
-  the one flourish; the title block is just the h1 and the intro, with no kicker or ornament rule.
+  the one flourish; the title block is just the h1, a Huxley epigraph (`.epigraph`) and the intro, with no kicker or ornament rule.
 - `--display` (IM Fell Double Pica) is used for h1/h2, room titles and the year stamped on seals, at weight 400.
 - `--body` (IM Fell DW Pica) is used for everything else. Meta text is italic. Fell figures are
   old-style.
