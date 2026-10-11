@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -2 64 64">
+  <!-- The open casement from the corner of the page (.window in index.html), on a paper tile
+       so the ink still reads on a dark tab bar. -->
+  <defs>
+    <pattern id="h" width="1.7" height="1.7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="0" x2="0" y2="1.7" stroke="#35281E" stroke-width="0.55"/>
+    </pattern>
+  </defs>
+  <rect x="0" y="-2" width="64" height="64" rx="10" fill="#F3EBD8"/>
+  <g stroke="#35281E" stroke-width="0.9" stroke-linejoin="round">
+    <rect x="20" y="12" width="24" height="38" fill="#FFFDF4" stroke="none"/>
+    <rect x="20" y="12" width="24" height="2.5" fill="url(#h)" opacity="0.7" stroke="none"/>
+    <rect x="18.5" y="11" width="27" height="40" fill="none"/>
+    <path d="M14.5 11 H49.5 L47.5 7.5 H16.5 Z" fill="url(#h)"/>
+    <path d="M19.5 7.5 C22 3.6 42 3.6 44.5 7.5" fill="none" stroke-linecap="round"/>
+    <circle cx="32" cy="5.2" r="1.1" fill="#35281E" stroke="none"/>
+    <path d="M17 51 H47 L50.5 54.5 H13.5 Z" fill="url(#h)"/>
+    <path d="M3.5 8.5 L18.5 13 L18.5 49 L3.5 54 Z" fill="url(#h)"/>
+    <path d="M60.5 8.5 L45.5 13 L45.5 49 L60.5 54 Z" fill="url(#h)"/>
+  </g>
+  <g fill="#FBFAF5" stroke="#35281E" stroke-width="0.5">
+    <path d="M5.45 11.74 L10.47 13.06 L10.47 24.15 L5.45 23.69 Z M5.45 25.24 L10.47 25.59 L10.47 36.68 L5.45 37.19 Z M5.45 38.74 L10.47 38.12 L10.47 49.21 L5.45 50.69 Z M11.52 13.33 L16.55 14.65 L16.55 24.7 L11.52 24.25 Z M11.52 25.66 L16.55 26.01 L16.55 36.06 L11.52 36.57 Z M11.52 37.99 L16.55 37.36 L16.55 47.42 L11.52 48.9 Z"/>
+    <path d="M58.55 11.74 L53.52 13.06 L53.52 24.15 L58.55 23.69 Z M58.55 25.24 L53.52 25.59 L53.52 36.68 L58.55 37.19 Z M58.55 38.74 L53.52 38.12 L53.52 49.21 L58.55 50.69 Z M52.48 13.33 L47.45 14.65 L47.45 24.7 L52.48 24.25 Z M52.48 25.66 L47.45 26.01 L47.45 36.06 L52.48 36.57 Z M52.48 37.99 L47.45 37.36 L47.45 47.42 L52.48 48.9 Z"/>
+  </g>
+</svg>
