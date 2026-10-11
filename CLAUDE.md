@@ -62,15 +62,17 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 - `--display` (IM Fell Double Pica) is used for h1/h2, room titles and the year stamped on seals, at weight 400.
 - `--body` (IM Fell DW Pica) is used for everything else. Meta text is italic. Fell figures are
   old-style.
-- `--hand` (YasiHand), in `--gall` ink (never blue), is used for controls. The
-  tally ("13/37") is set in `--display`, centred under the intro. Map counts are
+- `--hand` (YasiHand), in `--gall` ink (never blue), is used for controls and for the
+  tally, a margin note ("so far, 13/37!") set in the right margin beside a `]` bracket
+  spanning the first intro paragraph (`.margin-note`); at 1100px and below it drops to its own
+  centred line with no bracket. Map counts are
   set in `--body` so they sit on the city name's baseline.
 - Palette: the wall is cool whitewashed plaster (`--plaster`, lit by `--daylight`, a strong
   falloff from the upper left, fixed to the screen). Objects on it are warm `--paper`, so they separate
   by temperature, not just value. `--gall` is ink on paper and `--umber` is secondary on paper. Text written straight on the wall uses
-  bone-black `--wall-ink` / `--wall-ink-2`, with `--wall-rule` for rules. `--ultramarine` is
-  the one accent: the tally, the rule's lozenge, links, water-lining and focus rings. `--lead-tin`
-  is reserved for "seen". Don't add another yellow or another beige.
+  bone-black `--wall-ink` / `--wall-ink-2`, with `--wall-rule` for rules. `--lead-tin` is
+  the one accent: "seen", the rule's lozenge, links and focus rings. Don't add another
+  yellow, another beige, or a blue.
 - No highlighter bars, no all-caps labels.
 - Light comes from the upper left, so every cast shadow falls down and to the right
   (`--cast`). Keep new shadows consistent with that.

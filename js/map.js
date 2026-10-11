@@ -493,8 +493,7 @@
       });
       var seen = works.filter(function (w) { return w.seen; }).length;
       var tally = document.getElementById('tally');
-      tally.textContent = seen + '/' + works.length;
-      tally.setAttribute('aria-label', seen + ' of ' + works.length + ' seen');
+      tally.textContent = 'so far, ' + seen + '/\u2009' + works.length + '!';
       home = computeHome();
       applyVB(home);
       recluster();

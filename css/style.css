@@ -41,8 +41,7 @@
   --paper: #E7DEC8;      /* objects on the wall: the map sheet, wall labels */
   --gall: #35281E;       /* iron-gall ink */
   --umber: #6E5A45;      /* secondary text */
-  --ultramarine: #1C3F94; /* the one accent: natural lapis */
-  --lead-tin: #BF931F;   /* reserved for "seen" */
+  --lead-tin: #BF931F;   /* the one accent, and the mark of "seen" */
   --gall-soft: rgba(53, 40, 30, 0.18);
   --wash: rgba(53, 40, 30, 0.1);
   --hand: 'YasiHand', cursive;
@@ -84,11 +83,11 @@ body::after { background: var(--dusk); opacity: 0; }
   color: var(--wall-ink); margin-bottom: 1rem;
 }
 .content-body a {
-  color: var(--ultramarine); text-decoration: underline;
-  text-decoration-color: rgba(28, 63, 148, 0.35);
+  color: var(--lead-tin); text-decoration: underline;
+  text-decoration-color: rgba(191, 147, 31, 0.45);
   text-underline-offset: 3px;
 }
-.content-body a:hover { text-decoration-color: var(--ultramarine); }
+.content-body a:hover { text-decoration-color: var(--lead-tin); }
 
 /* ============ SITE FOOTER ============ */
 .site-footer {
