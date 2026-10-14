@@ -331,6 +331,9 @@
     box-shadow: var(--cast);
     transform-origin: 0 0;
   }
+  .viewer-img { cursor: zoom-in; }
+  .viewer.magnified .viewer-img { cursor: grab; touch-action: none; }
+  .viewer.dragging .viewer-img { cursor: grabbing; }
   .frame:not(.empty) .canvas { cursor: zoom-in; }
 
   .museum-name {
@@ -569,7 +572,7 @@
     <p class="room-sub" id="roomSub"></p>
     <div id="roomWorks"></div>
   </div>
-  <div class="viewer" id="viewer" hidden><div class="viewer-wall" id="viewerWall"></div><img class="viewer-img" id="viewerImg" alt=""></div>
+  <div class="viewer" id="viewer" hidden><div class="viewer-wall" id="viewerWall"></div><img class="viewer-img" id="viewerImg" alt="" draggable="false"></div>
   <!-- Fixed to the screen, so it's always in reach however far down the wall you've scrolled. -->
   <button class="room-close" id="roomClose" type="button">close</button>
 </div>

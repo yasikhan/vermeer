@@ -99,5 +99,7 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 - "close" is `position: fixed` outside `.room-inner`, so it stays reachable however far the wall
   scrolls. Any click on bare wall (not a frame, label or heading) also closes the room, as does Esc.
 - Clicking a picture lifts it out of its frame (`zoomIn()` in `js/frames.js`) to fit the screen
-  in `.viewer`, on the same plaster wall with its own light/dusk states. Any click, Esc or "close"
-  puts it back first (`zoomOut()`); the empty Concert frame doesn't zoom.
+  in `.viewer`, on the same plaster wall with its own light/dusk states. Clicking the lifted picture
+  magnifies it 3× about that point (`examine()`); drag or scroll to move around it, click it again to
+  fit. A click on the wall around it, Esc or "close" puts it back in its frame (`zoomOut()`); the empty
+  Concert frame doesn't zoom.

@@ -556,8 +556,12 @@
   }
 
   // From the picture's place in its frame to its place in the viewer, as a transform on the viewer image.
+  // Measured with any magnification taken off, so it's the same from fit or close up.
   function fromCanvas(canvas) {
+    var t = viewerImg.style.transform;
+    viewerImg.style.transform = 'none';
     var c = canvas.getBoundingClientRect(), f = viewerImg.getBoundingClientRect();
+    viewerImg.style.transform = t;
     return 'translate(' + (c.left - f.left).toFixed(1) + 'px,' + (c.top - f.top).toFixed(1) + 'px) scale(' +
       (c.width / f.width).toFixed(4) + ',' + (c.height / f.height).toFixed(4) + ')';
   }
@@ -590,11 +594,91 @@
     });
   }
 
+  /* ---------- examining a lifted picture ---------- */
+
+  var MAG = 3;
+  function magTransform(m) {
+    return m ? 'translate(' + m.tx.toFixed(1) + 'px,' + m.ty.toFixed(1) + 'px) scale(' + m.s + ')' : 'none';
+  }
+  // Keep a magnified picture filling the screen along an axis where it's bigger than it,
+  // centred where it isn't. The viewer sits at the screen's origin, so offsets are screen px.
+  function clampMag(m) {
+    function axis(t, start, size, view) {
+      var w = size * m.s;
+      return w <= view ? (view - w) / 2 - start : Math.min(-start, Math.max(view - w - start, t));
+    }
+    m.tx = axis(m.tx, viewerImg.offsetLeft, viewerImg.offsetWidth, viewer.clientWidth);
+    m.ty = axis(m.ty, viewerImg.offsetTop, viewerImg.offsetHeight, viewer.clientHeight);
+    return m;
+  }
+  function setMag(z, m, animate) {
+    var from = getComputedStyle(viewerImg).transform;
+    z.mag = m;
+    viewer.classList.toggle('magnified', !!m);
+    viewerImg.style.transform = m ? magTransform(m) : '';
+    if (animate && !reduceMotion.matches && !document.hidden) {
+      z.anims.push(viewerImg.animate([{ transform: from }, { transform: magTransform(m) }],
+        { duration: 420, easing: 'cubic-bezier(.2, 1, .36, 1)' }));
+    }
+  }
+  // A click on the picture magnifies it about that point; another click fits it to the screen again.
+  function examine(e) {
+    var z = current && current.zoom;
+    if (!z || z.leaving || viewer.hidden) return;
+    if (z.dragged) { z.dragged = false; return; }
+    if (z.mag) { setMag(z, null, true); return; }
+    var x = e.clientX - viewerImg.offsetLeft, y = e.clientY - viewerImg.offsetTop;
+    setMag(z, clampMag({ s: MAG, tx: x - x * MAG, ty: y - y * MAG }), true);
+  }
+  function pan(z, dx, dy) {
+    z.mag.tx += dx; z.mag.ty += dy;
+    viewerImg.style.transform = magTransform(clampMag(z.mag));
+  }
+
+  // Drag (or scroll) to move around a magnified picture.
+  viewerImg.addEventListener('pointerdown', function (e) {
+    var z = current && current.zoom;
+    if (!z || !z.mag || z.leaving || e.button !== 0) return;
+    e.preventDefault();
+    z.anims.forEach(function (a) { a.finish(); });
+    var last = { x: e.clientX, y: e.clientY }, start = last;
+    z.dragged = false;
+    viewerImg.setPointerCapture(e.pointerId);
+    viewer.classList.add('dragging');
+    function move(ev) {
+      if (Math.abs(ev.clientX - start.x) + Math.abs(ev.clientY - start.y) > 4) z.dragged = true;
+      pan(z, ev.clientX - last.x, ev.clientY - last.y);
+      last = { x: ev.clientX, y: ev.clientY };
+    }
+    function up() {
+      viewer.classList.remove('dragging');
+      viewerImg.removeEventListener('pointermove', move);
+      viewerImg.removeEventListener('pointerup', up);
+      viewerImg.removeEventListener('pointercancel', up);
+    }
+    viewerImg.addEventListener('pointermove', move);
+    viewerImg.addEventListener('pointerup', up);
+    viewerImg.addEventListener('pointercancel', up);
+  });
+  viewer.addEventListener('wheel', function (e) {
+    var z = current && current.zoom;
+    if (!z || !z.mag || z.leaving) return;
+    e.preventDefault();
+    z.anims.forEach(function (a) { a.finish(); });
+    pan(z, -e.deltaX, -e.deltaY);
+  }, { passive: false });
+  window.addEventListener('resize', function () {
+    var z = current && current.zoom;
+    if (z && z.mag) viewerImg.style.transform = magTransform(clampMag(z.mag));
+  });
+
   function endZoom() {
     var z = current && current.zoom;
     if (!z) return;
     z.anims.forEach(function (a) { a.cancel(); });
     viewer.hidden = true;
+    viewer.classList.remove('magnified', 'dragging');
+    viewerImg.style.transform = '';
     viewerImg.removeAttribute('src');
     z.canvas.style.visibility = '';
     current.zoom = null;
@@ -609,7 +693,7 @@
     if (viewer.hidden || document.hidden) { endZoom(); return; }
     var outs = reduceMotion.matches
       ? [viewer.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, fill: 'forwards' })]
-      : [viewerImg.animate([{ transform: 'none' }, { transform: fromCanvas(z.canvas) }],
+      : [viewerImg.animate([{ transform: magTransform(z.mag) }, { transform: fromCanvas(z.canvas) }],
           { duration: 380, easing: 'cubic-bezier(.45, 0, .55, 1)', fill: 'forwards' }),
          viewerWall.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, delay: 60, easing: 'ease-in', fill: 'forwards' })];
     z.anims = z.anims.concat(outs);
@@ -665,8 +749,8 @@
   });
   room.addEventListener('click', function (e) {
     if (!current) return;
-    // While a picture fills the screen, any click puts it back.
-    if (current.zoom) { zoomOut(); return; }
+    // While a picture fills the screen, a click on it looks closer; anywhere else puts it back.
+    if (current.zoom) { if (e.target === viewerImg) examine(e); else zoomOut(); return; }
     var canvas = e.target.closest('.frame:not(.empty) .canvas');
     if (canvas) { zoomIn(canvas); return; }
     // Anywhere on the bare wall closes the room; the pictures, their labels and the
