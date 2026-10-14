@@ -13,6 +13,7 @@
   "frame": "burl-ripple",
   "commons": "Johannes Vermeer - Het melkmeisje - Google Art Project.jpg",
   "image": "images/milkmaid.jpg",
+  "large": "images/large/milkmaid.jpg",
   "seen": 2023
  },
  {
@@ -28,7 +29,8 @@
   "widthCm": 44,
   "frame": "carved",
   "commons": "Johannes Vermeer - Gezicht op huizen in Delft, bekend als 'Het straatje' - Google Art Project.jpg",
-  "image": "images/little-street.jpg"
+  "image": "images/little-street.jpg",
+  "large": "images/large/little-street.jpg"
  },
  {
   "id": "woman-reading-letter",
@@ -44,6 +46,7 @@
   "frame": "carved",
   "commons": "Vermeer, Johannes - Woman reading a letter - ca. 1662-1663.jpg",
   "image": "images/woman-reading-letter.jpg",
+  "large": "images/large/woman-reading-letter.jpg",
   "seen": 2023
  },
  {
@@ -59,7 +62,8 @@
   "widthCm": 38.5,
   "frame": "ripple-rosewood",
   "commons": "Johannes Vermeer - 'De liefdesbrief' - Google Art Project.jpg",
-  "image": "images/love-letter.jpg"
+  "image": "images/love-letter.jpg",
+  "large": "images/large/love-letter.jpg"
  },
  {
   "id": "pearl-earring",
@@ -75,6 +79,7 @@
   "frame": "carved",
   "commons": "1665 Girl with a Pearl Earring.jpg",
   "image": "images/pearl-earring.jpg",
+  "large": "images/large/pearl-earring.jpg",
   "seen": 2022
  },
  {
@@ -91,6 +96,7 @@
   "frame": "ebony",
   "commons": "Johannes Vermeer - View of Delft - 92 - Mauritshuis.jpg",
   "image": "images/view-of-delft.jpg",
+  "large": "images/large/view-of-delft.jpg",
   "seen": 2022
  },
  {
@@ -106,7 +112,8 @@
   "widthCm": 104.6,
   "frame": "carved",
   "commons": "Johannes Vermeer - Diana and her Nymphs - 406 - Mauritshuis.jpg",
-  "image": "images/diana.jpg"
+  "image": "images/diana.jpg",
+  "large": "images/large/diana.jpg"
  },
  {
   "id": "glass-of-wine",
@@ -121,7 +128,8 @@
   "widthCm": 79.6,
   "frame": "ripple",
   "commons": "Jan Vermeer van Delft - The Glass of Wine - Google Art Project.jpg",
-  "image": "images/glass-of-wine.jpg"
+  "image": "images/glass-of-wine.jpg",
+  "large": "images/large/glass-of-wine.jpg"
  },
  {
   "id": "pearl-necklace",
@@ -136,7 +144,8 @@
   "widthCm": 45,
   "frame": "ebony",
   "commons": "Jan Vermeer van Delft - Young Woman with a Pearl Necklace - Google Art Project.jpg",
-  "image": "images/pearl-necklace.jpg"
+  "image": "images/pearl-necklace.jpg",
+  "large": "images/large/pearl-necklace.jpg"
  },
  {
   "id": "girl-wine-glass",
@@ -151,7 +160,8 @@
   "widthCm": 67.5,
   "frame": "ripple",
   "commons": "Jan Vermeer van Delft 006.jpg",
-  "image": "images/girl-wine-glass.jpg"
+  "image": "images/girl-wine-glass.jpg",
+  "large": "images/large/girl-wine-glass.jpg"
  },
  {
   "id": "procuress",
@@ -166,7 +176,8 @@
   "widthCm": 130,
   "frame": "gilt",
   "commons": "Johannes Vermeer - The Procuress - Google Art Project.jpg",
-  "image": "images/procuress.jpg"
+  "image": "images/procuress.jpg",
+  "large": "images/large/procuress.jpg"
  },
  {
   "id": "open-window",
@@ -181,7 +192,8 @@
   "widthCm": 64.5,
   "frame": "ebony",
   "commons": "Jan Vermeer van Delft - Brieflezend meisje bij het venster (ca. 1657-59).jpg",
-  "image": "images/open-window.jpg"
+  "image": "images/open-window.jpg",
+  "large": "images/large/open-window.jpg"
  },
  {
   "id": "geographer",
@@ -196,7 +208,8 @@
   "widthCm": 45.4,
   "frame": "ebony",
   "commons": "Johannes Vermeer, Der Geograf, 1669.png",
-  "image": "images/geographer.jpg"
+  "image": "images/geographer.jpg",
+  "large": "images/large/geographer.jpg"
  },
  {
   "id": "art-of-painting",
@@ -212,6 +225,7 @@
   "frame": "ripple",
   "commons": "Jan Vermeer - The Art of Painting - Google Art Project.jpg",
   "image": "images/art-of-painting.jpg",
+  "large": "images/large/art-of-painting.jpg",
   "seen": 2025
  },
  {
@@ -227,7 +241,8 @@
   "widthCm": 21,
   "frame": "marquetry",
   "commons": "Johannes Vermeer - The lacemaker (c.1669-1671).jpg",
-  "image": "images/lacemaker.jpg"
+  "image": "images/lacemaker.jpg",
+  "large": "images/large/lacemaker.jpg"
  },
  {
   "id": "astronomer",
@@ -242,7 +257,8 @@
   "widthCm": 46.3,
   "frame": "burl",
   "commons": "Johannes Vermeer - The Astronomer - 1668.jpg",
-  "image": "images/astronomer.jpg"
+  "image": "images/astronomer.jpg",
+  "large": "images/large/astronomer.jpg"
  },
  {
   "id": "standing-virginal",
@@ -257,7 +273,8 @@
   "widthCm": 45.2,
   "frame": "ripple",
   "commons": "Jan Vermeer van Delft - Jonge vrouw staande bij een virginaal (ca. 1670-72).jpg",
-  "image": "images/standing-virginal.jpg"
+  "image": "images/standing-virginal.jpg",
+  "large": "images/large/standing-virginal.jpg"
  },
  {
   "id": "seated-virginal",
@@ -272,7 +289,8 @@
   "widthCm": 45.5,
   "frame": "ripple",
   "commons": "Jan Vermeer van Delft - Jonge vrouw aan een virginaal (ca. 1670-72).jpg",
-  "image": "images/seated-virginal.jpg"
+  "image": "images/seated-virginal.jpg",
+  "large": "images/large/seated-virginal.jpg"
  },
  {
   "id": "guitar-player",
@@ -288,6 +306,7 @@
   "frame": "ebony",
   "commons": "Jan Vermeer van Delft 013.jpg",
   "image": "images/guitar-player.jpg",
+  "large": "images/large/guitar-player.jpg",
   "seen": 2024
  },
  {
@@ -304,6 +323,7 @@
   "frame": "ebony-gilt",
   "commons": "Johannes Vermeer - Lady at the Virginal with a Gentleman, 'The Music Lesson' - Google Art Project.jpg",
   "image": "images/music-lesson.jpg",
+  "large": "images/large/music-lesson.jpg",
   "note": "On view when Buckingham Palace opens to visitors, or when lent to the King's Gallery."
  },
  {
@@ -319,7 +339,8 @@
   "widthCm": 141.5,
   "frame": "ebony-gilt",
   "commons": "Johannes (Jan) Vermeer - Christ in the House of Martha and Mary - Google Art Project.jpg",
-  "image": "images/martha-mary.jpg"
+  "image": "images/martha-mary.jpg",
+  "large": "images/large/martha-mary.jpg"
  },
  {
   "id": "letter-maid",
@@ -334,7 +355,8 @@
   "widthCm": 58.4,
   "frame": "ebony-gilt",
   "commons": "Woman writing a letter, with her maid, by Johannes Vermeer.jpg",
-  "image": "images/letter-maid.jpg"
+  "image": "images/letter-maid.jpg",
+  "large": "images/large/letter-maid.jpg"
  },
  {
   "id": "water-pitcher",
@@ -349,7 +371,8 @@
   "widthCm": 40.6,
   "frame": "ebony",
   "commons": "Jan Vermeer van Delft 019.jpg",
-  "image": "images/water-pitcher.jpg"
+  "image": "images/water-pitcher.jpg",
+  "large": "images/large/water-pitcher.jpg"
  },
  {
   "id": "maid-asleep",
@@ -364,7 +387,8 @@
   "widthCm": 76.5,
   "frame": "ripple-gilt",
   "commons": "Vermeer young women sleeping.jpg",
-  "image": "images/maid-asleep.jpg"
+  "image": "images/maid-asleep.jpg",
+  "large": "images/large/maid-asleep.jpg"
  },
  {
   "id": "lute",
@@ -379,7 +403,8 @@
   "widthCm": 45.7,
   "frame": "ripple-gilt",
   "commons": "Vermeer - Woman with a Lute near a window.jpg",
-  "image": "images/lute.jpg"
+  "image": "images/lute.jpg",
+  "large": "images/large/lute.jpg"
  },
  {
   "id": "study-young-woman",
@@ -394,7 +419,8 @@
   "widthCm": 40,
   "frame": "carved",
   "commons": "Vermeer-Portrait of a Young Woman.jpg",
-  "image": "images/study-young-woman.jpg"
+  "image": "images/study-young-woman.jpg",
+  "large": "images/large/study-young-woman.jpg"
  },
  {
   "id": "catholic-faith",
@@ -409,7 +435,8 @@
   "widthCm": 88.9,
   "frame": "ebony",
   "commons": "Johannes Vermeer, Allegory of the Catholic Faith, The Metropolitan Museum of Art.jpg",
-  "image": "images/catholic-faith.jpg"
+  "image": "images/catholic-faith.jpg",
+  "large": "images/large/catholic-faith.jpg"
  },
  {
   "id": "officer",
@@ -425,6 +452,7 @@
   "frame": "carved",
   "commons": "Johannes Vermeer - De Soldaat en het Lachende Meisje - Google Art Project.jpg",
   "image": "images/officer.jpg",
+  "large": "images/large/officer.jpg",
   "seen": 2026
  },
  {
@@ -441,6 +469,7 @@
   "frame": "carved",
   "commons": "Vermeer Girl Interrupted at Her Music.jpg",
   "image": "images/interrupted.jpg",
+  "large": "images/large/interrupted.jpg",
   "seen": 2026
  },
  {
@@ -457,6 +486,7 @@
   "frame": "carved",
   "commons": "Vermeer Lady Maidservant Holding Letter.jpg",
   "image": "images/mistress-maid.jpg",
+  "large": "images/large/mistress-maid.jpg",
   "seen": 2026
  },
  {
@@ -473,6 +503,7 @@
   "frame": "carved",
   "commons": "Young Woman Seated at a Virginal, Johannes Vermeer, 1670-1672, oil on canvas, 25.5 by 20.1 cm, The Leiden Collection.jpg",
   "image": "images/leiden-virginal.jpg",
+  "large": "images/large/leiden-virginal.jpg",
   "note": "Privately owned. Seen only when lent to exhibitions.",
   "seen": 2023
  },
@@ -490,6 +521,7 @@
   "frame": "ripple",
   "commons": "Johannes Vermeer - Woman Holding a Balance - Google Art Project.jpg",
   "image": "images/balance.jpg",
+  "large": "images/large/balance.jpg",
   "seen": 2023
  },
  {
@@ -505,7 +537,8 @@
   "widthCm": 40,
   "frame": "ripple-tortoise",
   "commons": "A Lady Writing by Johannes Vermeer, 1665-6.png",
-  "image": "images/lady-writing.jpg"
+  "image": "images/lady-writing.jpg",
+  "large": "images/large/lady-writing.jpg"
  },
  {
   "id": "red-hat",
@@ -521,6 +554,7 @@
   "frame": "ebony",
   "commons": "Vermeer - Girl with a Red Hat.JPG",
   "image": "images/red-hat.jpg",
+  "large": "images/large/red-hat.jpg",
   "seen": 2023
  },
  {
@@ -537,6 +571,7 @@
   "frame": "ripple",
   "commons": "Attributed to Johannes Vermeer, Girl with a Flute, probably 1665-1675, NGA 1237.jpg",
   "image": "images/flute.jpg",
+  "large": "images/large/flute.jpg",
   "note": "Since 2022 the museum credits an associate in Vermeer's studio.",
   "seen": 2023
  },
@@ -554,6 +589,7 @@
   "frame": "carved",
   "commons": "Vermeer The Concert.jpg",
   "image": "images/concert.jpg",
+  "large": "images/large/concert.jpg",
   "stolen": true,
   "note": "Stolen in 1990 and never recovered. The empty frame still hangs in the Dutch Room."
  },
@@ -571,6 +607,7 @@
   "frame": "ebony",
   "commons": "Vermeer saint praxedis.jpg",
   "image": "images/praxedis.jpg",
+  "large": "images/large/praxedis.jpg",
   "note": "Privately owned, on long-term loan. The attribution is still debated."
  }
 ]

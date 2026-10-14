@@ -425,6 +425,7 @@
     } else {
       var img = new Image();
       img.src = w.image;
+      if (w.large) img.dataset.large = w.large;
       img.alt = w.title + ', ' + w.year;
       img.decoding = 'async';
       canvas.appendChild(img);
@@ -574,6 +575,8 @@
     var z = current.zoom = { canvas: canvas, anims: [] };
     viewerImg.src = img.currentSrc || img.src;
     viewerImg.alt = img.alt;
+    // Sized from the picture's proportions, not the file, so the large copy can swap in without a jump.
+    viewerImg.style.setProperty('--ar', img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 0.8);
     // Usually already loaded for the frame. (Not decode(): it never settles in a hidden tab.)
     var ready = viewerImg.complete ? Promise.resolve() : new Promise(function (res) {
       viewerImg.addEventListener('load', res, { once: true });
@@ -583,6 +586,12 @@
       if (current && current.zoom !== z) return;
       viewer.hidden = false;
       canvas.style.visibility = 'hidden';
+      // The frame's copy shows at once; the large one replaces it when it arrives, for looking closer.
+      if (img.dataset.large) {
+        var large = new Image();
+        large.onload = function () { if (current && current.zoom === z) viewerImg.src = large.src; };
+        large.src = img.dataset.large;
+      }
       if (document.hidden) return;
       if (reduceMotion.matches) {
         z.anims.push(viewer.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220 }));

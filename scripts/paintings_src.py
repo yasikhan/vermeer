@@ -112,7 +112,7 @@ for pid, title, year, museum, commons, h, w, note in P:
     frame = FRAME[pid]
     d = dict(id=pid, title=title, year=year, museum=museum, city=city, country=country,
              lat=lat, lon=lon, heightCm=h, widthCm=w, frame=frame, commons=commons,
-             image=f"images/{pid}.jpg")
+             image=f"images/{pid}.jpg", large=f"images/large/{pid}.jpg")
     if pid == "concert": d["stolen"] = True
     if note: d["note"] = note
     if pid in SEEN: d["seen"] = SEEN[pid]

@@ -487,7 +487,8 @@
   };
 
   /* ---------- load ---------- */
-  fetch('data/paintings.json')
+  // Revalidate every load, so the data never lags behind the scripts that read it.
+  fetch('data/paintings.json', { cache: 'no-cache' })
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (works) {
       works.forEach(function (w) {

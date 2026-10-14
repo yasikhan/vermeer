@@ -19,8 +19,9 @@ GitHub Pages serves `main` as-is (`.nojekyll` is present). Pushing to `main` pub
   the lead-tin wax seal pressed into the corner of a wall label: a thin raised rim around a
   sunken field with the year cut in Roman numerals (`sealSVG()` / `roman()` in `js/frames.js`).
   Only the wax outline and angle vary, seeded by the painting's id.
-- Images live at `images/<id>.jpg`. Use JPEG only, with a 1000px long edge, at sips `formatOptions normal`
-  (about quality 80). A bare number is ignored by sips.
+- Images live at `images/<id>.jpg` (for the frame, 1000px long edge) and `images/large/<id>.jpg` (3000px,
+  or the original's size if smaller; never enlarged), both written by `fetch_images.py`. Use JPEG only, at sips
+  `formatOptions normal` (about quality 80). A bare number is ignored by sips.
 
 ## Map
 
@@ -99,7 +100,9 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
 - "close" is `position: fixed` outside `.room-inner`, so it stays reachable however far the wall
   scrolls. Any click on bare wall (not a frame, label or heading) also closes the room, as does Esc.
 - Clicking a picture lifts it out of its frame (`zoomIn()` in `js/frames.js`) to fit the screen
-  in `.viewer`, on the same plaster wall with its own light/dusk states. Clicking the lifted picture
+  in `.viewer`, on the same plaster wall with its own light/dusk states. The frame's image shows at once
+  and the large copy swaps in when it loads; `.viewer-img` is sized from `--ar` (the picture's
+  proportions), not the file, so the swap doesn't jump. Clicking the lifted picture
   magnifies it 3× about that point (`examine()`); drag or scroll to move around it, click it again to
   fit. A click on the wall around it, Esc or "close" puts it back in its frame (`zoomOut()`); the empty
   Concert frame doesn't zoom.
