@@ -246,14 +246,14 @@
     background-size: 240px 240px, auto;
     opacity: 0;
   }
-  .room-scrim::before, .room-scrim::after {
+  .room-scrim::before, .room-scrim::after, .viewer-wall::before, .viewer-wall::after {
     content: ''; position: absolute; inset: 0; pointer-events: none;
     transition: opacity 0.9s ease;
   }
-  .room-scrim::before { background: var(--grain), var(--dusk); background-size: 240px 240px, auto; opacity: 0; }
-  .room-scrim::after { background: var(--grain), var(--daylight); background-size: 240px 240px, auto, auto; }
-  [data-light="off"] .room-scrim::before { opacity: 1; }
-  [data-light="off"] .room-scrim::after { opacity: 0; }
+  .room-scrim::before, .viewer-wall::before { background: var(--grain), var(--dusk); background-size: 240px 240px, auto; opacity: 0; }
+  .room-scrim::after, .viewer-wall::after { background: var(--grain), var(--daylight); background-size: 240px 240px, auto, auto; }
+  [data-light="off"] .room-scrim::before, [data-light="off"] .viewer-wall::before { opacity: 1; }
+  [data-light="off"] .room-scrim::after, [data-light="off"] .viewer-wall::after { opacity: 0; }
 
   /* ============ THE WINDOW ============ */
   /* The light source: a leaded casement in the corner, the one every Vermeer interior is lit by.
@@ -311,6 +311,27 @@
   .room-close:hover::before { opacity: 1; }
   .room-close:focus-visible { outline: 2px solid var(--lead-tin); outline-offset: 2px; }
   .room-head, .room-sub, .museum-name, .room-close { opacity: 0; }
+
+  /* A picture lifted out of its frame to fill the screen, on the same wall. Under "close". */
+  .viewer {
+    position: fixed; inset: 0; z-index: 1;
+    display: grid; place-items: center;
+    cursor: zoom-out;
+  }
+  .viewer[hidden] { display: none; }
+  .viewer-wall {
+    position: absolute; inset: 0;
+    background: var(--grain), var(--plaster);
+    background-size: 240px 240px, auto;
+  }
+  .viewer-img {
+    position: relative; display: block;
+    width: auto; height: auto;
+    max-width: calc(100vw - 8rem); max-height: calc(100vh - 7rem);
+    box-shadow: var(--cast);
+    transform-origin: 0 0;
+  }
+  .frame:not(.empty) .canvas { cursor: zoom-in; }
 
   .museum-name {
     font-style: italic; font-size: 1.1rem; color: var(--wall-ink);
@@ -432,6 +453,7 @@
     .room-inner { padding: 4.2rem 1.2rem 4rem; } /* clear of the window */
     .room-title { font-size: 1.9rem; }
     .room-close { top: 1.4rem; }
+    .viewer-img { max-width: calc(100vw - 2rem); max-height: calc(100vh - 8rem); }
     .hang { flex-direction: column; align-items: center; gap: 4.4rem; }
     .work { align-items: center; }
     .work-hanger { height: auto; }
@@ -547,6 +569,7 @@
     <p class="room-sub" id="roomSub"></p>
     <div id="roomWorks"></div>
   </div>
+  <div class="viewer" id="viewer" hidden><div class="viewer-wall" id="viewerWall"></div><img class="viewer-img" id="viewerImg" alt=""></div>
   <!-- Fixed to the screen, so it's always in reach however far down the wall you've scrolled. -->
   <button class="room-close" id="roomClose" type="button">close</button>
 </div>

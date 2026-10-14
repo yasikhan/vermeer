@@ -98,3 +98,6 @@ Thickness `t` scales with the picture, up to 46px, times the kind's `width`.
   These links are set in ink with a lead-tin underline so the paragraph stays legible.
 - "close" is `position: fixed` outside `.room-inner`, so it stays reachable however far the wall
   scrolls. Any click on bare wall (not a frame, label or heading) also closes the room, as does Esc.
+- Clicking a picture lifts it out of its frame (`zoomIn()` in `js/frames.js`) to fit the screen
+  in `.viewer`, on the same plaster wall with its own light/dusk states. Any click, Esc or "close"
+  puts it back first (`zoomOut()`); the empty Concert frame doesn't zoom.

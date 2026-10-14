@@ -9,10 +9,13 @@
   var subEl = document.getElementById('roomSub');
   var worksEl = document.getElementById('roomWorks');
   var closeBtn = document.getElementById('roomClose');
+  var viewer = document.getElementById('viewer');
+  var viewerWall = document.getElementById('viewerWall');
+  var viewerImg = document.getElementById('viewerImg');
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
   var WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
-  var current = null; // { names, origin, anims, closing }
+  var current = null; // { names, origin, anims, closing, zoom }
 
   function el(tag, cls, text) {
     var e = document.createElement(tag);
@@ -552,8 +555,72 @@
     });
   }
 
+  // From the picture's place in its frame to its place in the viewer, as a transform on the viewer image.
+  function fromCanvas(canvas) {
+    var c = canvas.getBoundingClientRect(), f = viewerImg.getBoundingClientRect();
+    return 'translate(' + (c.left - f.left).toFixed(1) + 'px,' + (c.top - f.top).toFixed(1) + 'px) scale(' +
+      (c.width / f.width).toFixed(4) + ',' + (c.height / f.height).toFixed(4) + ')';
+  }
+
+  // Lift a picture out of its frame to fill the screen.
+  function zoomIn(canvas) {
+    if (!current || current.zoom || current.closing) return;
+    var img = canvas.querySelector('img');
+    if (!img) return;
+    var z = current.zoom = { canvas: canvas, anims: [] };
+    viewerImg.src = img.currentSrc || img.src;
+    viewerImg.alt = img.alt;
+    // Usually already loaded for the frame. (Not decode(): it never settles in a hidden tab.)
+    var ready = viewerImg.complete ? Promise.resolve() : new Promise(function (res) {
+      viewerImg.addEventListener('load', res, { once: true });
+      viewerImg.addEventListener('error', res, { once: true });
+    });
+    ready.then(function () {
+      if (current && current.zoom !== z) return;
+      viewer.hidden = false;
+      canvas.style.visibility = 'hidden';
+      if (document.hidden) return;
+      if (reduceMotion.matches) {
+        z.anims.push(viewer.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 220 }));
+        return;
+      }
+      z.anims.push(viewerWall.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 320, easing: 'ease-out' }));
+      z.anims.push(viewerImg.animate([{ transform: fromCanvas(canvas) }, { transform: 'none' }],
+        { duration: 520, easing: 'cubic-bezier(.2, 1.02, .36, 1)' }));
+    });
+  }
+
+  function endZoom() {
+    var z = current && current.zoom;
+    if (!z) return;
+    z.anims.forEach(function (a) { a.cancel(); });
+    viewer.hidden = true;
+    viewerImg.removeAttribute('src');
+    z.canvas.style.visibility = '';
+    current.zoom = null;
+  }
+
+  // Put the picture back in its frame.
+  function zoomOut() {
+    var z = current && current.zoom;
+    if (!z || z.leaving) return;
+    z.leaving = true;
+    z.anims.forEach(function (a) { a.finish(); });
+    if (viewer.hidden || document.hidden) { endZoom(); return; }
+    var outs = reduceMotion.matches
+      ? [viewer.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, fill: 'forwards' })]
+      : [viewerImg.animate([{ transform: 'none' }, { transform: fromCanvas(z.canvas) }],
+          { duration: 380, easing: 'cubic-bezier(.45, 0, .55, 1)', fill: 'forwards' }),
+         viewerWall.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 300, delay: 60, easing: 'ease-in', fill: 'forwards' })];
+    z.anims = z.anims.concat(outs);
+    Promise.all(outs.map(function (a) { return a.finished; })).then(function () {
+      if (current && current.zoom === z) endZoom();
+    });
+  }
+
   function close() {
     if (!current || current.closing) return;
+    if (current.zoom) endZoom();
     current.closing = true;
     var cur = current;
     var works = Array.prototype.slice.call(worksEl.querySelectorAll('.work'));
@@ -592,15 +659,23 @@
     });
   }
 
-  closeBtn.addEventListener('click', close);
+  closeBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (current && current.zoom) zoomOut(); else close();
+  });
   room.addEventListener('click', function (e) {
+    if (!current) return;
+    // While a picture fills the screen, any click puts it back.
+    if (current.zoom) { zoomOut(); return; }
+    var canvas = e.target.closest('.frame:not(.empty) .canvas');
+    if (canvas) { zoomIn(canvas); return; }
     // Anywhere on the bare wall closes the room; the pictures, their labels and the
     // heading don't.
     if (!e.target.closest('.frame, .wall-label, .room-head, .room-sub, .museum-name, .room-close')) close();
   });
   document.addEventListener('keydown', function (e) {
     if (!current) return;
-    if (e.key === 'Escape') { e.preventDefault(); close(); }
+    if (e.key === 'Escape') { e.preventDefault(); if (current.zoom) zoomOut(); else close(); }
     // The close control is the room's only stop, so Tab stays on it.
     else if (e.key === 'Tab') { e.preventDefault(); closeBtn.focus(); }
   });
